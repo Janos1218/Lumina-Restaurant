@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pénztár | Lumina Luxus Étterem</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Playfair+Display:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌊</text></svg>">
+    
+    <style>
+        :root {
+            --bg-dark: #02050D;
+            --bg-panel: rgba(10, 20, 45, 0.65);
+            --accent-gold: #D4AF37;
+            --text-main: #E2E8F0;
+            --text-muted: #94A3B8;
+            --font-heading: 'Playfair Display', serif;
+            --font-text: 'Montserrat', sans-serif;
+        }
+
+        body {
+            font-family: var(--font-text);
+            background: radial-gradient(circle at top, #0A1931 0%, #02050D 100%);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding-top: 100px;
+        }
+
+        nav {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 1.5rem 5%; background: rgba(2, 5, 13, 0.85); backdrop-filter: blur(10px);
+            position: fixed; width: 100%; top: 0; z-index: 100;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+        }
+        .logo { font-family: var(--font-heading); font-size: 2rem; color: var(--accent-gold); text-decoration: none; letter-spacing: 2px; }
+
+        .container {
+            max-width: 1000px; margin: 0 auto; padding: 20px;
+            display: grid; grid-template-columns: 1.5fr 1fr; gap: 2rem;
+        }
+
+        .checkout-card {
+            background: var(--bg-panel); border: 1px solid rgba(212, 175, 55, 0.2);
+            padding: 2rem; border-radius: 8px; backdrop-filter: blur(10px);
+        }
+
+        h2 { font-family: var(--font-heading); color: var(--accent-gold); margin-bottom: 1.5rem; }
+
+        /* Kosár tételek */
+        .cart-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 1rem 0; border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .cart-item:last-child { border-bottom: none; }
+        .item-info h4 { margin: 0; }
+        .item-info p { color: var(--text-muted); font-size: 0.85rem; }
+        
+        .quantity-controls { display: flex; align-items: center; gap: 10px; }
+        .qty-btn {
+            background: transparent; border: 1px solid var(--accent-gold);
+            color: var(--accent-gold); width: 25px; height: 25px; cursor: pointer; border-radius: 3px;
+        }
+        .qty-btn:hover { background: var(--accent-gold); color: var(--bg-dark); }
+
+        /* Űrlap */
+        .form-group { margin-bottom: 1rem; }
+        .form-group label { display: block; font-size: 0.8rem; margin-bottom: 0.3rem; }
+        .form-group input, .form-group select {
+            width: 100%; padding: 0.8rem; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1);
+            color: #fff; border-radius: 4px; font-family: var(--font-text);
+        }
+
+        .total-box {
+            margin-top: 2rem; padding-top: 1rem; border-top: 2px solid var(--accent-gold);
+            display: flex; justify-content: space-between; font-size: 1.3rem; font-weight: 600;
+        }
+
+        .btn-order {
+            width: 100%; padding: 1rem; background: var(--accent-gold); color: var(--bg-dark);
+            border: none; border-radius: 4px; font-weight: bold; cursor: pointer; margin-top: 1.5rem;
+            text-transform: uppercase; letter-spacing: 1px; font-family: var(--font-text);
+        }
+        .btn-order:hover:not(:disabled) { background: #F1C40F; }
+        .btn-order:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        @media (max-width: 800px) { .container { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="index.html" class="logo">LUMINA</a>
+        <div style="margin-left: auto;">
+            <a href="shop.html" style="color: #fff; text-decoration: none; margin-right: 20px;">Vissza az étlapra</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="checkout-card">
+            <h2>Rendelésed</h2>
+            <div id="cartList">
+                <p>Kosár betöltése...</p>
+            </div>
+            <div class="total-box">
+                <span>Végösszeg:</span>
+                <span id="totalDisplay">0 Ft</span>
+            </div>
+        </div>
+
+        <div class="checkout-card">
+            <h2>Szállítás & Fizetés</h2>
+            <form id="orderForm">
+                <div class="form-group">
+                    <label>Teljes név</label>
+                    <input type="text" id="custName" required>
+                </div>
+                <div class="form-group">
+                    <label>Telefonszám</label>
+                    <input type="tel" id="custPhone" placeholder="+36..." required>
+                </div>
+                <div class="form-group">
+                    <label>Szállítási cím</label>
+                    <input type="text" id="custAddress" placeholder="Város, utca, házszám" required>
+                </div>
+                <div class="form-group">
+                    <label>Fizetési mód</label>
+                    <select id="paymentMethod">
+                        <option value="card_online">Bankkártya (Online)</option>
+                        <option value="cash">Készpénz az átvételkor</option>
+                        <option value="card_courier">Bankkártya a futárnál</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-order" id="submitOrderBtn">Rendelés Megerősítése</button>
+            </form>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+        import { getFirestore, collection, serverTimestamp, doc, runTransaction } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCytHaIELWaEZ-DwWuPDMdrTKj9Lwioay0",
+            authDomain: "balaton-tengeri-etterem.firebaseapp.com",
+            projectId: "balaton-tengeri-etterem",
+            storageBucket: "balaton-tengeri-etterem.firebasestorage.app",
+            messagingSenderId: "1070631358793",
+            appId: "1:1070631358793:web:1a6603f54b9f1948e5ca98",
+            measurementId: "G-F214XZK2QV"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let cart = JSON.parse(localStorage.getItem('lumina_cart')) || [];
+        let currentUser = null;
+
+        const cartList = document.getElementById('cartList');
+        const totalDisplay = document.getElementById('totalDisplay');
+        const orderForm = document.getElementById('orderForm');
+
+        // Bejelentkezés ellenőrzése
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                currentUser = user;
+            } else {
+                alert("A rendeléshez be kell jelentkezned!");
+                window.location.href = "login.html";
+            }
+        });
+
+        // Kosár Megjelenítése
+        function renderCart() {
+            if (cart.length === 0) {
+                cartList.innerHTML = "<p style='color: var(--text-muted);'>A kosarad üres.</p>";
+                totalDisplay.textContent = "0 Ft";
+                document.getElementById('submitOrderBtn').disabled = true;
+                return;
+            }
+
+            document.getElementById('submitOrderBtn').disabled = false;
+            cartList.innerHTML = "";
+            let total = 0;
+
+            cart.forEach((item, index) => {
+                const subtotal = item.price * item.quantity;
+                total += subtotal;
+
+                const div = document.createElement('div');
+                div.className = 'cart-item';
+                div.innerHTML = `
+                    <div class="item-info">
+                        <h4>${item.name}</h4>
+                        <p>${item.price.toLocaleString('hu-HU')} Ft / db</p>
+                    </div>
+                    <div class="quantity-controls">
+                        <button type="button" class="qty-btn" onclick="updateQty(${index}, -1)">-</button>
+                        <span>${item.quantity}</span>
+                        <button type="button" class="qty-btn" onclick="updateQty(${index}, 1)">+</button>
+                    </div>
+                `;
+                cartList.appendChild(div);
+            });
+
+            totalDisplay.textContent = total.toLocaleString('hu-HU') + " Ft";
+        }
+
+        // Mennyiség módosítása (Globális függvény)
+        window.updateQty = (index, change) => {
+            // Nem engedjük a végtelenségig növelni a maxStock ellenőrzése miatt
+            const item = cart[index];
+            const newQty = item.quantity + change;
+            
+            if (change > 0 && item.maxStock && newQty > item.maxStock) {
+                alert(`Ebből a termékből maximum ${item.maxStock} db rendelhető egyszerre!`);
+                return;
+            }
+
+            item.quantity = newQty;
+            
+            if (item.quantity <= 0) {
+                cart.splice(index, 1);
+            }
+            localStorage.setItem('lumina_cart', JSON.stringify(cart));
+            renderCart();
+        };
+
+        // Oldal betöltésekor fut
+        renderCart();
+
+        // Rendelés Leadása (Tranzakcióval)
+        orderForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            if (!currentUser) {
+                alert("Kérlek jelentkezz be újra!");
+                return;
+            }
+            if (cart.length === 0) {
+                alert("Üres kosárral nem rendelhetsz!");
+                return;
+            }
+
+            const submitBtn = document.getElementById('submitOrderBtn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = "Készlet ellenőrzése és rendelés...";
+
+            try {
+                // FIREBASE TRANZAKCIÓ: Készlet levonása ÉS rendelés mentése egyszerre
+                await runTransaction(db, async (transaction) => {
+                    
+                    const productRefs = [];
+
+                    // 1. Minden termék lekérése és készlet-ellenőrzés
+                    for (const item of cart) {
+                        const pRef = doc(db, "products", item.id);
+                        const pDoc = await transaction.get(pRef);
+                        
+                        if (!pDoc.exists()) {
+                            throw `A(z) ${item.name} sajnos már nem elérhető az étlapon.`;
+                        }
+
+                        const currentStock = pDoc.data().stock || 0;
+                        if (currentStock < item.quantity) {
+                            throw `Sajnos a(z) ${item.name} termékből nincs elég raktáron. (Elérhető: ${currentStock} db)`;
+                        }
+
+                        // Elmentjük, hogy mit mennyivel kell csökkenteni
+                        productRefs.push({ ref: pRef, newStock: currentStock - item.quantity });
+                    }
+
+                    // 2. Készlet csökkentése az adatbázisban
+                    productRefs.forEach(p => {
+                        transaction.update(p.ref, { stock: p.newStock });
+                    });
+
+                    // 3. Rendelés dokumentum létrehozása
+                    const orderData = {
+                        userId: currentUser.uid,
+                        customerName: document.getElementById('custName').value,
+                        phone: document.getElementById('custPhone').value,
+                        address: document.getElementById('custAddress').value,
+                        paymentMethod: document.getElementById('paymentMethod').value,
+                        items: cart,
+                        totalAmount: cart.reduce((sum, i) => sum + (i.price * i.quantity), 0),
+                        status: "pending",
+                        createdAt: serverTimestamp()
+                    };
+                    
+                    const orderRef = doc(collection(db, "orders"));
+                    transaction.set(orderRef, orderData);
+                });
+
+                // Ha ide eljutottunk, a tranzakció sikeres volt
+                localStorage.removeItem('lumina_cart'); // Kosár ürítése
+                alert("Sikeres vásárlás! A rendelésedet rögzítettük.");
+                window.location.href = "profile.html"; // Átirányítás a profil oldalra
+
+            } catch (error) {
+                console.error("Rendelési hiba:", error);
+                alert("Hiba: " + error);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = "Rendelés Megerősítése";
+                renderCart(); // Kosár frissítése (hátha törlődött valami)
+            }
+        });
+    </script>
+</body>
+</html>

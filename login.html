@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bejelentkezés | Lumina Luxus Étterem</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Playfair+Display:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌊</text></svg>">
+    
+    <style>
+        /* Alapvető változók és reset */
+        :root {
+            --bg-dark: #02050D;
+            --bg-panel: rgba(10, 20, 45, 0.65);
+            --accent-gold: #D4AF37;
+            --text-main: #E2E8F0;
+            --text-muted: #94A3B8;
+            --font-heading: 'Playfair Display', serif;
+            --font-text: 'Montserrat', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-text);
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+            background: linear-gradient(rgba(2, 5, 13, 0.7), rgba(2, 5, 13, 0.95)), url('https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?q=80&w=2070&auto=format&fit=crop') center/cover no-repeat fixed;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Navigáció */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 5%;
+            background: rgba(2, 5, 13, 0.85);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+        }
+
+        .logo {
+            font-family: var(--font-heading);
+            font-size: 2rem;
+            color: var(--accent-gold);
+            text-decoration: none;
+            letter-spacing: 2px;
+        }
+
+        .nav-links a {
+            color: var(--text-main);
+            text-decoration: none;
+            margin: 0 1.5rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-gold);
+        }
+
+        .nav-actions a {
+            color: var(--bg-dark);
+            background-color: var(--accent-gold);
+            padding: 0.5rem 1.2rem;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-left: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .nav-actions a:hover {
+            background-color: #F1C40F;
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+        }
+
+        /* Autentikációs szekció */
+        .auth-section {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 120px 20px 60px;
+        }
+
+        .auth-card {
+            background: var(--bg-panel);
+            width: 100%;
+            max-width: 400px;
+            padding: 3rem;
+            border-radius: 8px;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            backdrop-filter: blur(15px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
+            text-align: center;
+        }
+
+        .auth-card h2 {
+            font-family: var(--font-heading);
+            font-size: 2.2rem;
+            color: var(--accent-gold);
+            margin-bottom: 0.5rem;
+        }
+
+        .auth-card p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.4rem;
+            color: var(--text-main);
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.9rem;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            color: #fff;
+            font-family: var(--font-text);
+            font-size: 1rem;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.2);
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 1rem;
+            margin-top: 1rem;
+            background: var(--accent-gold);
+            color: var(--bg-dark);
+            border: none;
+            border-radius: 4px;
+            font-family: var(--font-text);
+            font-size: 1.1rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-submit:hover {
+            background: #F1C40F;
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+        }
+
+        .auth-links {
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .auth-links a {
+            color: var(--accent-gold);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .auth-links a:hover {
+            color: #fff;
+        }
+
+        /* Hibaüzenetek stílusa */
+        .alert-message {
+            margin-bottom: 1rem;
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            display: none;
+        }
+        .alert-error {
+            background: rgba(231, 76, 60, 0.2);
+            color: #e74c3c;
+            border: 1px solid #e74c3c;
+        }
+        .alert-success {
+            background: rgba(46, 204, 113, 0.2);
+            color: #2ecc71;
+            border: 1px solid #2ecc71;
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="index.html" class="logo">LUMINA</a>
+        <div class="nav-links">
+            <a href="index.html">Főoldal</a>
+            <a href="about.html">Rólunk</a>
+            <a href="shop.html">Étlap & Rendelés</a>
+            <a href="contact.html">Kapcsolat</a>
+        </div>
+        <div class="nav-actions">
+            <a href="checkout.html">Kosár (0)</a>
+            <a href="login.html" class="active">Bejelentkezés</a>
+        </div>
+    </nav>
+
+    <section class="auth-section">
+        <div class="auth-card">
+            <h2>Üdvözlünk Újra</h2>
+            <p>Jelentkezz be a fiókodba a rendeléshez.</p>
+
+            <div id="statusMessage" class="alert-message"></div>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="email">E-mail cím</label>
+                    <input type="email" id="email" placeholder="pelda@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Jelszó</label>
+                    <input type="password" id="password" placeholder="••••••••" required>
+                </div>
+                
+                <button type="submit" class="btn-submit" id="submitBtn">Bejelentkezés</button>
+            </form>
+
+            <div class="auth-links">
+                <p>Nincs még fiókod? <a href="register.html">Regisztrálj itt!</a></p>
+            </div>
+        </div>
+    </section>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        // MÁSOLD BE IDE A SAJÁT FIREBASE CONFIG ADATAIDAT! (CSAK A KULCSOKAT)
+        const firebaseConfig = {
+        apiKey: "AIzaSyCytHaIELWaEZ-DwWuPDMdrTKj9Lwioay0",
+        authDomain: "balaton-tengeri-etterem.firebaseapp.com",
+        projectId: "balaton-tengeri-etterem",
+        storageBucket: "balaton-tengeri-etterem.firebasestorage.app",
+        messagingSenderId: "1070631358793",
+        appId: "1:1070631358793:web:1a6603f54b9f1948e5ca98",
+        measurementId: "G-F214XZK2QV"
+        };
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const loginForm = document.getElementById('loginForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const statusMessage = document.getElementById('statusMessage');
+
+        function showMessage(msg, isSuccess) {
+            statusMessage.textContent = msg;
+            statusMessage.style.display = 'block';
+            statusMessage.className = isSuccess ? 'alert-message alert-success' : 'alert-message alert-error';
+        }
+
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = "Bejelentkezés folyamatban...";
+
+            try {
+                // Bejelentkezés a Firebase Auth segítségével
+                await signInWithEmailAndPassword(auth, email, password);
+                
+                showMessage("Sikeres bejelentkezés! Átirányítás...", true);
+                
+                // Sikeres bejelentkezés után átirányítás a főoldalra
+                setTimeout(() => {
+                    window.location.href = "index.html";
+                }, 1500);
+
+            } catch (error) {
+                console.error("Bejelentkezési hiba:", error);
+                
+                // Hibaüzenetek kezelése
+                if (error.code === 'auth/invalid-credential' || error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+                    showMessage("Hiba: Helytelen e-mail cím vagy jelszó!", false);
+                } else {
+                    showMessage("Hiba történt a bejelentkezés során. Próbáld újra!", false);
+                }
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = "Bejelentkezés";
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Étlap & Rendelés | Lumina Luxus Étterem</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Playfair+Display:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌊</text></svg>">
+    
+    <style>
+        /* Alapvető változók és reset */
+        :root {
+            --bg-dark: #02050D;
+            --bg-panel: rgba(10, 20, 45, 0.65);
+            --accent-gold: #D4AF37;
+            --text-main: #E2E8F0;
+            --text-muted: #94A3B8;
+            --font-heading: 'Playfair Display', serif;
+            --font-text: 'Montserrat', sans-serif;
+            --danger: #e74c3c;
+            --success: #2ecc71;
+            --warning: #f1c40f;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--font-text);
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+            background: radial-gradient(circle at top, #0A1931 0%, #02050D 100%);
+            min-height: 100vh;
+        }
+
+        /* Navigáció */
+        nav {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 1.5rem 5%; background: rgba(2, 5, 13, 0.85); backdrop-filter: blur(10px);
+            position: fixed; width: 100%; top: 0; z-index: 100;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+        }
+        .logo { font-family: var(--font-heading); font-size: 2rem; color: var(--accent-gold); text-decoration: none; letter-spacing: 2px; }
+        .nav-links a { color: var(--text-main); text-decoration: none; margin: 0 1.5rem; font-size: 0.9rem; text-transform: uppercase; transition: color 0.3s ease; }
+        .nav-links a:hover, .nav-links a.active { color: var(--accent-gold); }
+        .nav-actions a, .nav-actions button {
+            color: var(--bg-dark); background-color: var(--accent-gold); padding: 0.5rem 1.2rem;
+            border-radius: 4px; text-decoration: none; font-weight: 600; margin-left: 1rem; transition: all 0.3s ease;
+            border: none; cursor: pointer; font-family: var(--font-text); font-size: 0.9rem;
+        }
+        .nav-actions a:hover, .nav-actions button:hover { background-color: #F1C40F; box-shadow: 0 0 15px rgba(212, 175, 55, 0.4); }
+
+        /* Fejléc */
+        .page-header {
+            padding: 150px 20px 60px; text-align: center;
+            background: linear-gradient(rgba(2, 5, 13, 0.7), rgba(2, 5, 13, 1)), url('https://images.unsplash.com/photo-1559339352-11d035aa65de?q=80&w=2000&auto=format&fit=crop') center/cover;
+        }
+        .page-header h1 { font-family: var(--font-heading); font-size: 3.5rem; color: var(--accent-gold); margin-bottom: 1rem; }
+
+        /* Admin Panel */
+        #adminPanel {
+            display: none; max-width: 1200px; margin: 2rem auto; padding: 2rem;
+            background: rgba(212, 175, 55, 0.05); border: 1px solid var(--accent-gold); border-radius: 8px;
+        }
+        .admin-sections { display: flex; gap: 2rem; flex-wrap: wrap; }
+        .admin-box { flex: 1; min-width: 300px; background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 8px; }
+        .admin-box.full-width { flex: 100%; margin-top: 2rem; }
+        #adminPanel h2, #adminPanel h3 { color: var(--accent-gold); font-family: var(--font-heading); margin-bottom: 1rem; text-align: center; }
+        
+        .admin-form { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .admin-form input, .admin-form textarea, .admin-form select {
+            width: 100%; padding: 0.8rem; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2);
+            color: #fff; border-radius: 4px; font-family: var(--font-text);
+        }
+        .admin-form textarea { grid-column: span 2; resize: vertical; min-height: 80px; }
+        .full-width-input { grid-column: span 2; }
+        .admin-btn { padding: 1rem; background: var(--accent-gold); color: var(--bg-dark); border: none; font-weight: bold; cursor: pointer; border-radius: 4px; text-transform: uppercase; width: 100%; margin-top: 1rem;}
+
+        /* --- Admin Rendelés Lista Stílusok --- */
+        .admin-order-card {
+            background: rgba(10, 20, 45, 0.8); border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 6px; padding: 1.5rem; margin-bottom: 1rem;
+            display: flex; justify-content: space-between; flex-wrap: wrap; gap: 1rem; align-items: center;
+        }
+        .order-details { flex: 1; min-width: 300px; font-size: 0.9rem; }
+        .order-details strong { color: #fff; }
+        .order-details .items-list { color: var(--accent-gold); margin: 0.5rem 0; font-style: italic; }
+        .order-actions { display: flex; flex-direction: column; gap: 0.5rem; align-items: flex-end; min-width: 150px; }
+        .badge { padding: 5px 10px; border-radius: 4px; font-weight: bold; font-size: 0.8rem; text-transform: uppercase; text-align: center; width: 100%;}
+        .badge.pending { color: var(--warning); border: 1px solid var(--warning); background: rgba(241, 196, 15, 0.1); }
+        .badge.completed { color: var(--success); border: 1px solid var(--success); background: rgba(46, 204, 113, 0.1); }
+        .btn-complete { background: var(--success); color: #fff; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; width: 100%; transition: 0.3s; }
+        .btn-complete:hover { background: #27ae60; }
+
+        /* Szűrő és Kereső Sáv */
+        .shop-controls {
+            max-width: 1200px; margin: 2rem auto; padding: 0 20px;
+            display: flex; gap: 1rem; justify-content: space-between; align-items: center; flex-wrap: wrap;
+        }
+        .search-box { flex: 1; min-width: 250px; }
+        .search-box input, .filter-box select {
+            width: 100%; padding: 0.8rem 1.2rem; background: var(--bg-panel); border: 1px solid rgba(212, 175, 55, 0.3);
+            color: #fff; border-radius: 30px; font-family: var(--font-text); outline: none; transition: 0.3s;
+        }
+        .search-box input:focus, .filter-box select:focus { border-color: var(--accent-gold); box-shadow: 0 0 10px rgba(212, 175, 55, 0.2); }
+
+        /* Termék Grid */
+        .shop-container { max-width: 1200px; margin: 1rem auto 5rem; padding: 0 20px; }
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 2.5rem; }
+        
+        .product-card {
+            background: var(--bg-panel); border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 8px; overflow: hidden; transition: transform 0.3s ease; display: flex; flex-direction: column;
+            position: relative;
+        }
+        .product-card:hover { transform: translateY(-10px); border-color: rgba(212, 175, 55, 0.3); }
+        .product-image { width: 100%; height: 220px; object-fit: cover; }
+        .stock-badge {
+            position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.8); color: var(--accent-gold);
+            padding: 5px 10px; border-radius: 4px; font-size: 0.8rem; font-weight: bold; border: 1px solid var(--accent-gold);
+        }
+        .out-of-stock-badge { border-color: var(--danger); color: var(--danger); }
+        
+        .product-info { padding: 1.5rem; text-align: center; display: flex; flex-direction: column; flex: 1; }
+        .product-category { font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.5rem; }
+        .product-title { font-family: var(--font-heading); font-size: 1.3rem; color: var(--accent-gold); margin-bottom: 0.5rem; }
+        .product-desc { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem; flex: 1; }
+        .product-price { font-size: 1.4rem; font-weight: 600; color: #fff; margin-bottom: 1rem; }
+        
+        .btn-add-cart {
+            width: 100%; padding: 0.8rem; border: 1px solid var(--accent-gold); background: transparent;
+            color: var(--accent-gold); font-weight: 600; text-transform: uppercase; cursor: pointer; transition: 0.3s;
+        }
+        .btn-add-cart:hover:not(:disabled) { background: var(--accent-gold); color: var(--bg-dark); }
+        .btn-add-cart:disabled { border-color: #555; color: #555; cursor: not-allowed; }
+
+        /* KOSÁR OLDALSÁV (Slide-out Sidebar) */
+        .cart-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7); backdrop-filter: blur(5px);
+            z-index: 999; display: none; opacity: 0; transition: opacity 0.3s;
+        }
+        .cart-sidebar {
+            position: fixed; top: 0; right: -450px; width: 100%; max-width: 400px; height: 100%;
+            background: var(--bg-dark); border-left: 1px solid rgba(212, 175, 55, 0.2);
+            z-index: 1000; box-shadow: -10px 0 30px rgba(0,0,0,0.8); transition: right 0.4s ease;
+            display: flex; flex-direction: column;
+        }
+        .cart-sidebar.open { right: 0; }
+        .cart-overlay.open { display: block; opacity: 1; }
+        
+        .cart-header { padding: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center; }
+        .cart-header h2 { font-family: var(--font-heading); color: var(--accent-gold); }
+        .close-cart { background: transparent; border: none; color: #fff; font-size: 1.5rem; cursor: pointer; }
+        
+        .cart-items { flex: 1; overflow-y: auto; padding: 1.5rem; }
+        .cart-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 1rem; }
+        .cart-item-info h4 { color: #fff; margin-bottom: 0.3rem; }
+        .cart-item-info p { color: var(--text-muted); font-size: 0.9rem; }
+        .cart-qty-controls { display: flex; align-items: center; gap: 10px; }
+        .qty-btn { background: transparent; border: 1px solid var(--accent-gold); color: var(--accent-gold); width: 28px; height: 28px; border-radius: 4px; cursor: pointer; }
+        .qty-btn:hover { background: var(--accent-gold); color: var(--bg-dark); }
+        
+        .cart-footer { padding: 1.5rem; border-top: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.5); }
+        .cart-total { display: flex; justify-content: space-between; font-size: 1.2rem; font-weight: bold; margin-bottom: 1rem; color: #fff; }
+        .btn-checkout { width: 100%; padding: 1rem; background: var(--accent-gold); color: var(--bg-dark); border: none; border-radius: 4px; font-weight: bold; font-size: 1.1rem; cursor: pointer; text-transform: uppercase; }
+        .btn-checkout:hover { background: #F1C40F; }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="index.html" class="logo">LUMINA</a>
+        <div class="nav-links">
+            <a href="index.html">Főoldal</a>
+            <a href="about.html">Rólunk</a>
+            <a href="shop.html" class="active">Étlap & Rendelés</a>
+            <a href="contact.html">Kapcsolat</a>
+        </div>
+        <div class="nav-actions">
+            <button id="cartNavBtn" onclick="toggleCart()">Kosár (0)</button>
+            <a href="login.html" id="loginNavBtn">Bejelentkezés</a>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <h1>Étlap & Rendelés</h1>
+    </header>
+
+    <section id="adminPanel">
+        <h2>Adminisztrációs Pult</h2>
+        <div class="admin-sections">
+            <div class="admin-box">
+                <h3>Új Étel Feltöltése</h3>
+                <form id="addProductForm" class="admin-form">
+                    <input type="text" id="prodName" placeholder="Étel neve" required>
+                    <input type="number" id="prodPrice" placeholder="Ár (Ft)" required>
+                    <input type="text" id="prodCategory" placeholder="Kategória (pl. Főétel)" required>
+                    <input type="number" id="prodStock" placeholder="Kezdeti Készlet (db)" required>
+                    <input type="text" id="prodImage" class="full-width-input" placeholder="Kép útvonala (pl. Images/lazac.jpg)" required>
+                    <textarea id="prodDesc" placeholder="Rövid leírás..."></textarea>
+                    <button type="submit" class="admin-btn full-width-input" id="addProdBtn">Hozzáadás az étlaphoz</button>
+                </form>
+            </div>
+            <div class="admin-box">
+                <h3>Raktárkészlet Növelése</h3>
+                <form id="updateStockForm" class="admin-form" style="display: flex; flex-direction: column;">
+                    <select id="stockProductSelect" required>
+                        <option value="">Válassz terméket...</option>
+                    </select>
+                    <input type="number" id="stockAddAmount" placeholder="Hozzáadandó mennyiség (db)" required min="1">
+                    <button type="submit" class="admin-btn">Készlet Frissítése</button>
+                </form>
+            </div>
+            
+            <div class="admin-box full-width">
+                <h3>Beérkezett Rendelések Kezelése</h3>
+                <div id="adminOrdersList">
+                    <p style="color: var(--text-muted); text-align: center;">Rendelések betöltése...</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="shop-controls">
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Keresés étel neve alapján... 🔍">
+        </div>
+        <div class="filter-box">
+            <select id="categoryFilter">
+                <option value="all">Minden kategória</option>
+            </select>
+        </div>
+    </div>
+
+    <main class="shop-container">
+        <div class="product-grid" id="productGrid">
+            <div style="text-align: center; color: var(--accent-gold); padding: 3rem; grid-column: 1 / -1;">Étlap betöltése... ✨</div>
+        </div>
+    </main>
+
+    <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+    <div class="cart-sidebar" id="cartSidebar">
+        <div class="cart-header">
+            <h2>Kosarad</h2>
+            <button class="close-cart" onclick="toggleCart()">✕</button>
+        </div>
+        <div class="cart-items" id="cartSidebarItems"></div>
+        <div class="cart-footer">
+            <div class="cart-total">
+                <span>Összesen:</span>
+                <span id="cartSidebarTotal">0 Ft</span>
+            </div>
+            <button class="btn-checkout" onclick="proceedToCheckout()">Tovább a pénztárhoz</button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, getDocs, doc, getDoc, updateDoc, increment, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCytHaIELWaEZ-DwWuPDMdrTKj9Lwioay0",
+            authDomain: "balaton-tengeri-etterem.firebaseapp.com",
+            projectId: "balaton-tengeri-etterem",
+            storageBucket: "balaton-tengeri-etterem.firebasestorage.app",
+            messagingSenderId: "1070631358793",
+            appId: "1:1070631358793:web:1a6603f54b9f1948e5ca98",
+            measurementId: "G-F214XZK2QV"
+        };
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let allProducts = []; 
+        let cart = JSON.parse(localStorage.getItem('lumina_cart')) || [];
+
+        const loginNavBtn = document.getElementById('loginNavBtn');
+        const adminPanel = document.getElementById('adminPanel');
+        
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                loginNavBtn.textContent = "Fiókom"; 
+                loginNavBtn.href = "profile.html"; 
+                
+                const userDoc = await getDoc(doc(db, "users", user.uid));
+                if (userDoc.exists() && userDoc.data().role === 'admin') {
+                    adminPanel.style.display = 'block';
+                    loadAdminOrders(); // Rendelések betöltése, ha admin
+                }
+            } else {
+                loginNavBtn.textContent = "Bejelentkezés";
+                loginNavBtn.href = "login.html";
+                adminPanel.style.display = 'none';
+            }
+        });
+
+        // --- ADMIN RENDELÉSKEZELÉS LOGIKA ---
+        const adminOrdersList = document.getElementById('adminOrdersList');
+
+        function formatAdminDate(firebaseTimestamp) {
+            if (!firebaseTimestamp) return 'N/A';
+            const d = firebaseTimestamp.toDate();
+            return `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+        }
+
+        async function loadAdminOrders() {
+            try {
+                // Rendelések lekérése
+                const querySnapshot = await getDocs(collection(db, "orders"));
+                let orders = [];
+                querySnapshot.forEach(doc => {
+                    orders.push({ id: doc.id, ...doc.data() });
+                });
+                
+                // Rendezzük dátum szerint csökkenőbe (legújabb legelöl)
+                orders.sort((a, b) => b.createdAt?.seconds - a.createdAt?.seconds);
+
+                if (orders.length === 0) {
+                    adminOrdersList.innerHTML = '<p style="color:var(--text-muted); text-align:center;">Nincsenek rendelések.</p>';
+                    return;
+                }
+
+                adminOrdersList.innerHTML = '';
+                orders.forEach(order => {
+                    const isCompleted = order.status === 'completed';
+                    const badgeClass = isCompleted ? 'completed' : 'pending';
+                    const badgeText = isCompleted ? 'Teljesítve' : 'Feldolgozás alatt';
+                    const itemsStr = order.items.map(i => `${i.quantity}x ${i.name}`).join(', ');
+
+                    adminOrdersList.innerHTML += `
+                        <div class="admin-order-card">
+                            <div class="order-details">
+                                <p><strong>Név:</strong> ${order.customerName} | <strong>Tel:</strong> ${order.phone}</p>
+                                <p><strong>Cím:</strong> ${order.address}</p>
+                                <p class="items-list">${itemsStr}</p>
+                                <p><strong>Összeg:</strong> ${order.totalAmount.toLocaleString('hu-HU')} Ft | <strong>Mikor:</strong> ${formatAdminDate(order.createdAt)}</p>
+                            </div>
+                            <div class="order-actions">
+                                <div class="badge ${badgeClass}">${badgeText}</div>
+                                ${!isCompleted ? `<button class="btn-complete" onclick="markOrderCompleted('${order.id}')">Készre állítás</button>` : ''}
+                            </div>
+                        </div>
+                    `;
+                });
+
+            } catch (error) {
+                console.error("Hiba a rendelések lekérésekor:", error);
+                adminOrdersList.innerHTML = '<p style="color:var(--danger); text-align:center;">Hiba az adatok betöltésekor. Ellenőrizd a Firestore szabályokat!</p>';
+            }
+        }
+
+        // Rendelés státuszának frissítése (Globális, hogy gombból hívható legyen)
+        window.markOrderCompleted = async (orderId) => {
+            if(!confirm("Biztosan teljesítve státuszba teszed a rendelést?")) return;
+            
+            try {
+                await updateDoc(doc(db, "orders", orderId), { status: "completed" });
+                loadAdminOrders(); // Újratöltjük a listát
+                alert("Rendelés állapota frissítve!");
+            } catch (error) {
+                console.error("Hiba frissítéskor:", error);
+                alert("Hiba történt a státusz frissítésekor.");
+            }
+        };
+
+
+        // --- KOSÁR LOGIKA (Változatlan) ---
+        const cartNavBtn = document.getElementById('cartNavBtn');
+        const cartSidebarItems = document.getElementById('cartSidebarItems');
+        const cartSidebarTotal = document.getElementById('cartSidebarTotal');
+
+        window.toggleCart = () => {
+            document.getElementById('cartSidebar').classList.toggle('open');
+            document.getElementById('cartOverlay').classList.toggle('open');
+            updateCartSidebar();
+        };
+
+        window.updateCartSidebar = () => {
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            cartNavBtn.textContent = `Kosár (${totalItems})`;
+            localStorage.setItem('lumina_cart', JSON.stringify(cart));
+
+            if (cart.length === 0) {
+                cartSidebarItems.innerHTML = '<p style="color:var(--text-muted); text-align:center; margin-top:2rem;">A kosarad jelenleg üres.</p>';
+                cartSidebarTotal.textContent = '0 Ft';
+                return;
+            }
+
+            cartSidebarItems.innerHTML = '';
+            let totalAmount = 0;
+
+            cart.forEach((item, index) => {
+                totalAmount += (item.price * item.quantity);
+                cartSidebarItems.innerHTML += `
+                    <div class="cart-item">
+                        <div class="cart-item-info">
+                            <h4>${item.name}</h4>
+                            <p>${item.price.toLocaleString('hu-HU')} Ft / db</p>
+                        </div>
+                        <div class="cart-qty-controls">
+                            <button class="qty-btn" onclick="updateQty(${index}, -1)">-</button>
+                            <span style="color:#fff; font-weight:bold;">${item.quantity}</span>
+                            <button class="qty-btn" onclick="updateQty(${index}, 1, ${item.maxStock})">+</button>
+                        </div>
+                    </div>
+                `;
+            });
+            cartSidebarTotal.textContent = `${totalAmount.toLocaleString('hu-HU')} Ft`;
+        };
+
+        window.updateQty = (index, change, maxStock = 99) => {
+            const newQty = cart[index].quantity + change;
+            if (newQty > maxStock) {
+                alert(`Ebből a termékből maximum ${maxStock} db van raktáron!`);
+                return;
+            }
+            if (newQty <= 0) {
+                cart.splice(index, 1);
+            } else {
+                cart[index].quantity = newQty;
+            }
+            updateCartSidebar();
+        };
+
+        window.addToCart = (id, name, price, stock) => {
+            const existingItem = cart.find(item => item.id === id);
+            const currentQty = existingItem ? existingItem.quantity : 0;
+
+            if (currentQty >= stock) {
+                alert("Sajnos nincs több ebből a termékből raktáron!");
+                return;
+            }
+
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({ id, name, price: Number(price), quantity: 1, maxStock: stock });
+            }
+            updateCartSidebar();
+            
+            if (!document.getElementById('cartSidebar').classList.contains('open')) {
+                window.toggleCart();
+            }
+        };
+
+        window.proceedToCheckout = () => {
+            if (cart.length === 0) {
+                alert("Üres kosárral nem tudsz a pénztárhoz menni!");
+            } else {
+                window.location.href = 'checkout.html';
+            }
+        };
+
+        updateCartSidebar();
+
+        // --- TERMÉKEK BETÖLTÉSE ---
+        const productGrid = document.getElementById('productGrid');
+        const categoryFilter = document.getElementById('categoryFilter');
+        const stockProductSelect = document.getElementById('stockProductSelect');
+
+        async function loadProducts() {
+            try {
+                const querySnapshot = await getDocs(collection(db, "products"));
+                allProducts = [];
+                let categories = new Set();
+                
+                stockProductSelect.innerHTML = '<option value="">Válassz terméket...</option>';
+
+                querySnapshot.forEach((docSnap) => {
+                    const prod = docSnap.data();
+                    prod.id = docSnap.id;
+                    allProducts.push(prod);
+                    categories.add(prod.category);
+
+                    stockProductSelect.innerHTML += `<option value="${prod.id}">${prod.name} (Jelenleg: ${prod.stock} db)</option>`;
+                });
+
+                categoryFilter.innerHTML = '<option value="all">Minden kategória</option>';
+                categories.forEach(cat => {
+                    categoryFilter.innerHTML += `<option value="${cat}">${cat}</option>`;
+                });
+
+                renderProducts(allProducts);
+            } catch (error) {
+                console.error("Hiba:", error);
+                productGrid.innerHTML = '<p style="color:red; grid-column:1/-1; text-align:center;">Hiba az adatbázissal!</p>';
+            }
+        }
+
+        function renderProducts(productsToRender) {
+            productGrid.innerHTML = '';
+            if (productsToRender.length === 0) {
+                productGrid.innerHTML = '<p style="grid-column: 1/-1; text-align: center;">Nincs a keresésnek megfelelő termék.</p>';
+                return;
+            }
+
+            productsToRender.forEach((prod) => {
+                const isOutOfStock = prod.stock <= 0;
+                const stockText = isOutOfStock ? "Kifogyott" : `Raktáron: ${prod.stock} db`;
+                const badgeClass = isOutOfStock ? "stock-badge out-of-stock-badge" : "stock-badge";
+                const btnText = isOutOfStock ? "Kifogyott" : "Kosárba";
+
+                const card = document.createElement('div');
+                card.className = 'product-card';
+                card.innerHTML = `
+                    <div class="${badgeClass}">${stockText}</div>
+                    <img src="${prod.imageUrl}" alt="${prod.name}" class="product-image" onerror="this.src='https://via.placeholder.com/400x250/02050D/D4AF37?text=Lumina'">
+                    <div class="product-info">
+                        <span class="product-category">${prod.category}</span>
+                        <h3 class="product-title">${prod.name}</h3>
+                        <p class="product-desc">${prod.description}</p>
+                        <p class="product-price">${Number(prod.price).toLocaleString('hu-HU')} Ft</p>
+                        <button class="btn-add-cart" ${isOutOfStock ? 'disabled' : ''} 
+                                onclick="addToCart('${prod.id}', '${prod.name}', ${prod.price}, ${prod.stock})">
+                            ${btnText}
+                        </button>
+                    </div>
+                `;
+                productGrid.appendChild(card);
+            });
+        }
+
+        const searchInput = document.getElementById('searchInput');
+        
+        function filterProducts() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const selectedCategory = categoryFilter.value;
+
+            const filtered = allProducts.filter(prod => {
+                const matchesSearch = prod.name.toLowerCase().includes(searchTerm);
+                const matchesCategory = selectedCategory === 'all' || prod.category === selectedCategory;
+                return matchesSearch && matchesCategory;
+            });
+
+            renderProducts(filtered);
+        }
+
+        searchInput.addEventListener('input', filterProducts);
+        categoryFilter.addEventListener('change', filterProducts);
+
+        // --- ADMIN ŰRLAPOK ---
+        document.getElementById('addProductForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('addProdBtn');
+            btn.disabled = true; btn.textContent = "Mentés...";
+
+            try {
+                await addDoc(collection(db, "products"), {
+                    name: document.getElementById('prodName').value,
+                    price: Number(document.getElementById('prodPrice').value),
+                    imageUrl: document.getElementById('prodImage').value,
+                    category: document.getElementById('prodCategory').value,
+                    description: document.getElementById('prodDesc').value,
+                    stock: Number(document.getElementById('prodStock').value)
+                });
+                alert("Termék sikeresen feltöltve!");
+                e.target.reset();
+                loadProducts();
+            } catch (error) { console.error(error); alert("Hiba a feltöltésnél."); } 
+            finally { btn.disabled = false; btn.textContent = "Hozzáadás az étlaphoz"; }
+        });
+
+        document.getElementById('updateStockForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const productId = document.getElementById('stockProductSelect').value;
+            const addAmount = Number(document.getElementById('stockAddAmount').value);
+
+            if (!productId) { alert("Válassz terméket!"); return; }
+
+            try {
+                const productRef = doc(db, "products", productId);
+                await updateDoc(productRef, {
+                    stock: increment(addAmount)
+                });
+                alert("Készlet sikeresen növelve!");
+                e.target.reset();
+                loadProducts(); 
+            } catch (error) { console.error(error); alert("Hiba a készlet frissítésekor."); }
+        });
+
+        loadProducts();
+    </script>
+</body>
+</html>

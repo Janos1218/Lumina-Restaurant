@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lumina | Luxus Tengeri Étterem a Balatonnál</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Playfair+Display:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌊</text></svg>">
+    <style>
+        /* Alapvető változók és reset */
+        :root {
+            --bg-dark: #02050D; /* Nagyon sötét tengerkék/fekete */
+            --bg-panel: rgba(10, 20, 45, 0.6); /* Üveghatású kék panel */
+            --accent-gold: #D4AF37; /* Luxus arany kiemelés */
+            --text-main: #E2E8F0;
+            --text-muted: #94A3B8;
+            --font-heading: 'Playfair Display', serif;
+            --font-text: 'Montserrat', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-text);
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+            /* Esti tengeri háttér atmoszféra generálása css-el */
+            background: radial-gradient(circle at top, #0A1931 0%, #02050D 70%);
+        }
+
+        /* Navigáció (Navbar) */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 5%;
+            background: rgba(2, 5, 13, 0.85);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+        }
+
+        .logo {
+            font-family: var(--font-heading);
+            font-size: 2rem;
+            color: var(--accent-gold);
+            text-decoration: none;
+            letter-spacing: 2px;
+        }
+
+        .nav-links a {
+            color: var(--text-main);
+            text-decoration: none;
+            margin: 0 1.5rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-gold);
+        }
+
+        .nav-actions a {
+            color: var(--bg-dark);
+            background-color: var(--accent-gold);
+            padding: 0.5rem 1.2rem;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-left: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .nav-actions a:hover {
+            background-color: #F1C40F;
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+        }
+
+        /* Hero Szekció */
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 20px;
+            /* Ideális esetben ide kerül egy gyönyörű sötét fotó a háttérbe */
+            background: linear-gradient(rgba(2, 5, 13, 0.7), rgba(2, 5, 13, 0.9)), url('https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?q=80&w=2070&auto=format&fit=crop') center/cover;
+            margin-top: 0;
+        }
+
+        .hero h1 {
+            font-family: var(--font-heading);
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            color: #ffffff;
+            text-shadow: 0 4px 15px rgba(0,0,0,0.8);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin-bottom: 2.5rem;
+            color: var(--text-muted);
+        }
+
+        .btn-primary {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            border: 1px solid var(--accent-gold);
+            background: transparent;
+            color: var(--accent-gold);
+            text-decoration: none;
+            font-size: 1.1rem;
+            letter-spacing: 1px;
+            transition: all 0.4s ease;
+            cursor: pointer;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-gold);
+            color: var(--bg-dark);
+        }
+
+        /* Áttekintő kártyák (Overview) */
+        .overview {
+            padding: 6rem 5%;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: var(--bg-panel);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 3rem 2rem;
+            border-radius: 8px;
+            text-align: center;
+            backdrop-filter: blur(5px);
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            border-color: rgba(212, 175, 55, 0.3);
+        }
+
+        .card h3 {
+            font-family: var(--font-heading);
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: #fff;
+        }
+
+        .card p {
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+        }
+
+        .card a {
+            color: var(--accent-gold);
+            text-decoration: none;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 1px solid transparent;
+            padding-bottom: 3px;
+            transition: border-color 0.3s ease;
+        }
+
+        .card a:hover {
+            border-color: var(--accent-gold);
+        }
+
+        /* Lábléc */
+        footer {
+            text-align: center;
+            padding: 2rem;
+            background: #010308;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="index.html" class="logo">LUMINA</a>
+        <div class="nav-links">
+            <a href="index.html">Főoldal</a>
+            <a href="about.html">Rólunk</a>
+            <a href="shop.html">Étlap & Rendelés</a>
+            <a href="contact.html">Kapcsolat</a>
+        </div>
+        <div class="nav-actions">
+            <a href="checkout.html">Kosár (0)</a>
+            <a href="login.html" id="navLoginBtn">Bejelentkezés</a>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <h1>Az Éjszakai Óceán Varázsa</h1>
+        <p>Tapasztald meg a páratlan tengeri ízvilágot prémium minőségben, közvetlenül a Balaton partján. Luxus, elegancia és friss alapanyagok.</p>
+        <a href="shop.html" class="btn-primary">Tovább az Étlapra</a>
+    </header>
+
+    <section class="overview">
+        <div class="card">
+            <h3>Történetünk</h3>
+            <p>Hogyan hoztuk el a mediterrán éjszakák luxusát és a friss tenger gyümölcseit egy exkluzív magyarországi környezetbe.</p>
+            <a href="about.html">Ismerj meg minket &#8594;</a>
+        </div>
+        <div class="card">
+            <h3>Kínálatunk</h3>
+            <p>Böngéssz mesterszakácsaink által készített tengeri különlegességeink között, és rendeld meg őket közvetlenül az asztalodhoz.</p>
+            <a href="shop.html">Webshop megnyitása &#8594;</a>
+        </div>
+        <div class="card">
+            <h3>Asztalfoglalás</h3>
+            <p>Látogass el hozzánk személyesen! Találj meg minket a Balaton legexkluzívabb partszakaszán, és foglalj asztalt estére.</p>
+            <a href="contact.html">Elérhetőségek &#8594;</a>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 Lumina Tengeri Étterem. Minden jog fenntartva.</p>
+    </footer>
+    <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyCytHaIELWaEZ-DwWuPDMdrTKj9Lwioay0",
+        authDomain: "balaton-tengeri-etterem.firebaseapp.com",
+        projectId: "balaton-tengeri-etterem",
+        storageBucket: "balaton-tengeri-etterem.firebasestorage.app",
+        messagingSenderId: "1070631358793",
+        appId: "1:1070631358793:web:1a6603f54b9f1948e5ca98",
+        measurementId: "G-F214XZK2QV"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // Megkeressük a gombot (kezeljük, ha esetleg navLoginBtn vagy loginNavBtn az ID-ja)
+    const navLoginBtn = document.getElementById('navLoginBtn') || document.getElementById('loginNavBtn');
+
+    if (navLoginBtn) {
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                navLoginBtn.textContent = "Fiókom";
+                navLoginBtn.href = "profile.html";
+            } else {
+                navLoginBtn.textContent = "Bejelentkezés";
+                navLoginBtn.href = "login.html";
+            }
+        });
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kapcsolat | Lumina Luxus Étterem</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Playfair+Display:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌊</text></svg>">
+    <style>
+        /* --- Alapvető változók és reset --- */
+        :root {
+            --bg-dark: #02050D;
+            --bg-panel: rgba(10, 20, 45, 0.6);
+            --accent-gold: #D4AF37;
+            --text-main: #E2E8F0;
+            --text-muted: #94A3B8;
+            --font-heading: 'Playfair Display', serif;
+            --font-text: 'Montserrat', sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--font-text);
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+            background: radial-gradient(circle at top, #0A1931 0%, #02050D 70%);
+        }
+
+        /* --- Navigáció (Navbar) --- */
+        nav {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 1.5rem 5%; background: rgba(2, 5, 13, 0.85); backdrop-filter: blur(10px);
+            position: fixed; width: 100%; top: 0; z-index: 100;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+        }
+
+        .logo { font-family: var(--font-heading); font-size: 2rem; color: var(--accent-gold); text-decoration: none; letter-spacing: 2px; }
+
+        .nav-links a { color: var(--text-main); text-decoration: none; margin: 0 1.5rem; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; transition: color 0.3s ease; }
+        .nav-links a:hover, .nav-links a.active { color: var(--accent-gold); }
+
+        .nav-actions a {
+            color: var(--bg-dark); background-color: var(--accent-gold); padding: 0.5rem 1.2rem;
+            border-radius: 4px; text-decoration: none; font-weight: 600; margin-left: 1rem; transition: all 0.3s ease;
+        }
+        .nav-actions a:hover { background-color: #F1C40F; box-shadow: 0 0 15px rgba(212, 175, 55, 0.4); }
+
+        /* --- Oldal Fejléc --- */
+        .page-header {
+            padding: 150px 20px 80px; text-align: center;
+            background: linear-gradient(rgba(2, 5, 13, 0.85), rgba(2, 5, 13, 1)), url('https://images.unsplash.com/photo-1551632436-cbf8dd35adfa?q=80&w=2000&auto=format&fit=crop') center/cover;
+        }
+        .page-header h1 { font-family: var(--font-heading); font-size: 3.5rem; color: var(--accent-gold); margin-bottom: 1rem; }
+        .page-header p { color: var(--text-muted); font-size: 1.1rem; max-width: 600px; margin: 0 auto; }
+
+        /* --- Kapcsolat Szekció --- */
+        .contact-section { padding: 5rem 5%; max-width: 1400px; margin: 0 auto; }
+        .contact-container { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; }
+
+        /* --- Űrlap --- */
+        .contact-form-wrapper {
+            background: var(--bg-panel); padding: 3rem; border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); height: fit-content;
+        }
+        .contact-form-wrapper h2 { font-family: var(--font-heading); font-size: 2rem; color: #fff; margin-bottom: 1.5rem; }
+
+        .form-group { margin-bottom: 1.5rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; color: var(--text-muted); font-size: 0.9rem; }
+        .form-group input, .form-group textarea {
+            width: 100%; padding: 1rem; background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 4px; color: #fff; font-family: var(--font-text); font-size: 1rem; transition: 0.3s ease;
+        }
+        .form-group input:focus, .form-group textarea:focus { outline: none; border-color: var(--accent-gold); box-shadow: 0 0 10px rgba(212, 175, 55, 0.2); }
+        .form-group textarea { resize: vertical; min-height: 150px; }
+
+        .btn-submit {
+            display: inline-block; width: 100%; padding: 1rem; border: 1px solid var(--accent-gold);
+            background: transparent; color: var(--accent-gold); font-family: var(--font-text); font-size: 1.1rem;
+            letter-spacing: 1px; text-transform: uppercase; transition: all 0.4s ease; cursor: pointer; border-radius: 4px;
+        }
+        .btn-submit:hover { background: var(--accent-gold); color: var(--bg-dark); font-weight: 600; }
+
+        /* --- Információk és Térkép --- */
+        .contact-info-wrapper { display: flex; flex-direction: column; gap: 2rem; }
+        .info-card h3 { font-family: var(--font-heading); font-size: 1.5rem; color: var(--accent-gold); margin-bottom: 1rem; }
+        .info-item { display: flex; align-items: flex-start; margin-bottom: 1rem; }
+        .info-item p { color: var(--text-main); font-size: 1rem; }
+        .info-item span { display: block; color: var(--text-muted); font-size: 0.9rem; margin-top: 0.2rem; }
+
+        .map-container { width: 100%; height: 350px; border-radius: 8px; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.05); }
+        .map-container iframe { width: 100%; height: 100%; border: 0; filter: invert(90%) hue-rotate(180deg) brightness(95%) contrast(85%); }
+
+        /* --- ADMIN ÜZENETEK PANEL --- */
+        #adminMessagesPanel {
+            display: none; /* JS jeleníti meg */
+            max-width: 1400px; margin: 0 auto 5rem; padding: 2rem 5%;
+        }
+        .admin-header-box { border-bottom: 2px solid var(--accent-gold); margin-bottom: 2rem; padding-bottom: 1rem; }
+        .admin-header-box h2 { font-family: var(--font-heading); color: var(--accent-gold); font-size: 2rem; }
+        
+        .messages-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 1.5rem; }
+        .admin-msg-card {
+            background: rgba(10, 20, 45, 0.8); border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 8px; padding: 1.5rem; box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        }
+        .msg-sender { font-weight: bold; color: #fff; font-size: 1.1rem; margin-bottom: 0.2rem; }
+        .msg-email { color: var(--accent-gold); font-size: 0.85rem; margin-bottom: 1rem; display: block; }
+        .msg-date { color: var(--text-muted); font-size: 0.8rem; float: right; }
+        .msg-text { background: rgba(0,0,0,0.4); padding: 1rem; border-radius: 4px; font-size: 0.95rem; color: var(--text-main); font-style: italic; }
+
+        footer { text-align: center; padding: 2rem; background: #010308; border-top: 1px solid rgba(255, 255, 255, 0.05); color: var(--text-muted); font-size: 0.9rem; }
+
+        @media (max-width: 900px) { .contact-container { grid-template-columns: 1fr; } }
+        
+        .alert-message { margin-top: 15px; padding: 10px; border-radius: 4px; text-align: center; font-weight: bold; display: none; }
+        .alert-success { background: rgba(46, 204, 113, 0.2); color: #2ecc71; border: 1px solid #2ecc71; }
+        .alert-error { background: rgba(231, 76, 60, 0.2); color: #e74c3c; border: 1px solid #e74c3c; }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="index.html" class="logo">LUMINA</a>
+        <div class="nav-links">
+            <a href="index.html">Főoldal</a>
+            <a href="about.html">Rólunk</a>
+            <a href="shop.html">Étlap & Rendelés</a>
+            <a href="contact.html" class="active">Kapcsolat</a>
+        </div>
+        <div class="nav-actions">
+            <a href="shop.html">Kosár</a> 
+            <a href="login.html" id="navLoginBtn">Bejelentkezés</a>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <h1>Kapcsolat</h1>
+        <p>Asztalfoglalás, rendezvények vagy kérdések esetén állunk rendelkezésedre.</p>
+    </header>
+
+    <section class="contact-section">
+        <div class="contact-container">
+            
+            <div class="contact-form-wrapper">
+                <h2>Írj nekünk</h2>
+                <form id="contactForm">
+                    <div class="form-group">
+                        <label for="name">Teljes Név</label>
+                        <input type="text" id="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">E-mail cím</label>
+                        <input type="email" id="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Üzenet</label>
+                        <textarea id="message" required></textarea>
+                    </div>
+                    <button type="submit" class="btn-submit" id="submitBtn">Üzenet Küldése</button>
+                    <div id="statusMessage" class="alert-message"></div>
+                </form>
+            </div>
+
+            <div class="contact-info-wrapper">
+                <div class="info-card">
+                    <h3>Elérhetőségek</h3>
+                    <div class="info-item"><p>📍 Cím:<br><span>8237 Tihany, Balaton-parti sétány 1.</span></p></div>
+                    <div class="info-item"><p>📞 Telefon:<br><span>+36 20 123 4567</span></p></div>
+                    <div class="info-item"><p>✉️ E-mail:<br><span>info@luminarestaurant.hu</span></p></div>
+                    <div class="info-item"><p>🕒 Nyitvatartás:<br><span>Kedd - Vasárnap: 18:00 - 01:00<br>Hétfő: Zárva</span></p></div>
+                </div>
+                <div class="map-container">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2728.328325997235!2d17.88607131560462!3d46.916327979144464!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4769be51201ce8bd%3A0xc68297b5e40e69de!2sTihany!5e0!3m2!1shu!2shu!4v1698765432100!5m2!1shu!2shu" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section id="adminMessagesPanel">
+        <div class="admin-header-box">
+            <h2>Adminisztráció: Beérkezett Üzenetek</h2>
+        </div>
+        <div class="messages-grid" id="messagesGrid">
+            <p style="color: var(--text-muted);">Üzenetek betöltése...</p>
+        </div>
+    </section>
+
+    <footer>
+        <p>© 2026 Lumina Tengeri Étterem. Minden jog fenntartva.</p>
+    </footer>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, serverTimestamp, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCytHaIELWaEZ-DwWuPDMdrTKj9Lwioay0",
+            authDomain: "balaton-tengeri-etterem.firebaseapp.com",
+            projectId: "balaton-tengeri-etterem",
+            storageBucket: "balaton-tengeri-etterem.firebasestorage.app",
+            messagingSenderId: "1070631358793",
+            appId: "1:1070631358793:web:1a6603f54b9f1948e5ca98",
+            measurementId: "G-F214XZK2QV"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        const contactForm = document.getElementById('contactForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const statusMessage = document.getElementById('statusMessage');
+        const navLoginBtn = document.getElementById('navLoginBtn');
+
+        function showMessage(msg, isSuccess) {
+            statusMessage.textContent = msg;
+            statusMessage.style.display = 'block';
+            statusMessage.className = isSuccess ? 'alert-message alert-success' : 'alert-message alert-error';
+        }
+
+        function formatDate(firebaseTimestamp) {
+            if (!firebaseTimestamp) return 'Ismeretlen időpont';
+            const date = firebaseTimestamp.toDate();
+            return date.toLocaleDateString('hu-HU', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+        }
+
+        let currentUser = null;
+
+        // Felhasználó és Admin állapot ellenőrzése
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUser = user;
+                document.getElementById('email').value = user.email;
+                navLoginBtn.textContent = "Fiókom";
+                navLoginBtn.href = "profile.html";
+
+                // Megnézzük, hogy Admin-e
+                const userDoc = await getDoc(doc(db, "users", user.uid));
+                if (userDoc.exists() && userDoc.data().role === 'admin') {
+                    document.getElementById('adminMessagesPanel').style.display = 'block';
+                    loadAdminMessages();
+                }
+
+            } else {
+                currentUser = null;
+                navLoginBtn.textContent = "Bejelentkezés";
+                navLoginBtn.href = "login.html";
+            }
+        });
+
+        // Admin Üzenetek betöltése
+        async function loadAdminMessages() {
+            const messagesGrid = document.getElementById('messagesGrid');
+            try {
+                const querySnapshot = await getDocs(collection(db, "contact_messages"));
+                const messages = [];
+                
+                querySnapshot.forEach((doc) => {
+                    messages.push(doc.data());
+                });
+
+                // Időrendi sorrend (legújabb legelöl)
+                messages.sort((a, b) => b.createdAt?.seconds - a.createdAt?.seconds);
+
+                if (messages.length === 0) {
+                    messagesGrid.innerHTML = '<p style="color: var(--text-muted);">Nincsenek beérkezett üzenetek.</p>';
+                    return;
+                }
+
+                messagesGrid.innerHTML = '';
+                messages.forEach(msg => {
+                    messagesGrid.innerHTML += `
+                        <div class="admin-msg-card">
+                            <span class="msg-date">${formatDate(msg.createdAt)}</span>
+                            <div class="msg-sender">${msg.name}</div>
+                            <a href="mailto:${msg.email}" class="msg-email">${msg.email}</a>
+                            <div class="msg-text">"${msg.message}"</div>
+                        </div>
+                    `;
+                });
+
+            } catch (error) {
+                console.error("Hiba az üzenetek lekérésekor:", error);
+                messagesGrid.innerHTML = '<p style="color: #e74c3c;">Hiba történt az üzenetek betöltése közben. Ellenőrizd a Firebase szabályokat!</p>';
+            }
+        }
+
+        // Űrlap beküldése
+        contactForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            if (!currentUser) {
+                showMessage("Hiba: Az üzenetküldéshez be kell jelentkezned!", false);
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = "Küldés folyamatban...";
+
+            try {
+                await addDoc(collection(db, "contact_messages"), {
+                    userId: currentUser.uid,
+                    name: document.getElementById('name').value,
+                    email: document.getElementById('email').value,
+                    message: document.getElementById('message').value,
+                    createdAt: serverTimestamp()
+                });
+
+                showMessage("Üzenet sikeresen elküldve! Hamarosan válaszolunk.", true);
+                contactForm.reset();
+                document.getElementById('email').value = currentUser.email; 
+                
+                // Ha admin küldött üzenetet tesztből, frissítsük a listát
+                const userDoc = await getDoc(doc(db, "users", currentUser.uid));
+                if (userDoc.exists() && userDoc.data().role === 'admin') {
+                    loadAdminMessages();
+                }
+
+            } catch (error) {
+                console.error("Hiba az üzenet küldésekor: ", error);
+                showMessage("Hiba történt az üzenet küldésekor. Próbáld újra később.", false);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = "Üzenet Küldése";
+            }
+        });
+    </script>
+</body>
+</html>

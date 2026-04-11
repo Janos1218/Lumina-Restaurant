@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saját Fiók | Lumina Luxus Étterem</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Playfair+Display:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌊</text></svg>">
+    
+    <style>
+        /* Alapvető változók és reset */
+        :root {
+            --bg-dark: #02050D;
+            --bg-panel: rgba(10, 20, 45, 0.65);
+            --accent-gold: #D4AF37;
+            --text-main: #E2E8F0;
+            --text-muted: #94A3B8;
+            --font-heading: 'Playfair Display', serif;
+            --font-text: 'Montserrat', sans-serif;
+            --success: #2ecc71;
+            --warning: #f1c40f;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--font-text);
+            background: linear-gradient(rgba(2, 5, 13, 0.85), rgba(2, 5, 13, 0.95)), url('https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?q=80&w=2070&auto=format&fit=crop') center/cover fixed;
+            color: var(--text-main);
+            min-height: 100vh;
+            padding-top: 100px;
+        }
+
+        /* Navigáció */
+        nav {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 1.5rem 5%; background: rgba(2, 5, 13, 0.85); backdrop-filter: blur(10px);
+            position: fixed; width: 100%; top: 0; z-index: 100;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+        }
+        .logo { font-family: var(--font-heading); font-size: 2rem; color: var(--accent-gold); text-decoration: none; letter-spacing: 2px; }
+        .nav-links a { color: var(--text-main); text-decoration: none; margin: 0 1.5rem; font-size: 0.9rem; text-transform: uppercase; transition: color 0.3s ease; }
+        .nav-links a:hover, .nav-links a.active { color: var(--accent-gold); }
+
+        /* Profil Konténer */
+        .profile-container {
+            max-width: 1200px; margin: 2rem auto; padding: 0 20px;
+            display: grid; grid-template-columns: 350px 1fr; gap: 2rem;
+        }
+
+        /* Bal panel: Felhasználói adatok */
+        .profile-sidebar {
+            background: var(--bg-panel); border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 8px; padding: 2rem; backdrop-filter: blur(10px);
+            text-align: center; height: fit-content;
+        }
+        .avatar-circle {
+            width: 120px; height: 120px; border-radius: 50%; border: 2px solid var(--accent-gold);
+            margin: 0 auto 1.5rem; display: flex; align-items: center; justify-content: center;
+            font-size: 3rem; background: rgba(0,0,0,0.5); font-family: var(--font-heading); color: var(--accent-gold);
+        }
+        .profile-sidebar h2 { font-family: var(--font-heading); color: #fff; margin-bottom: 0.5rem; }
+        .profile-sidebar p { color: var(--text-muted); margin-bottom: 1.5rem; }
+        
+        .badge {
+            display: inline-block; padding: 0.4rem 1rem; border-radius: 30px;
+            font-size: 0.8rem; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;
+            margin-bottom: 1rem;
+        }
+        .badge-admin { background: rgba(231, 76, 60, 0.2); color: #e74c3c; border: 1px solid #e74c3c; }
+        .badge-user { background: rgba(212, 175, 55, 0.2); color: var(--accent-gold); border: 1px solid var(--accent-gold); }
+        
+        .loyalty-status { margin: 1.5rem 0; padding: 1rem; background: rgba(0,0,0,0.3); border-radius: 8px; }
+        .loyalty-status span { display: block; font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; }
+        .loyalty-status strong { font-family: var(--font-heading); font-size: 1.2rem; color: var(--accent-gold); }
+
+        .btn-logout {
+            width: 100%; padding: 1rem; background: transparent; color: #e74c3c;
+            border: 1px solid #e74c3c; border-radius: 4px; font-weight: bold; cursor: pointer;
+            text-transform: uppercase; transition: 0.3s;
+        }
+        .btn-logout:hover { background: #e74c3c; color: #fff; }
+
+        /* Jobb panel: Tartalom */
+        .profile-content { display: flex; flex-direction: column; gap: 2rem; }
+        
+        .content-section {
+            background: var(--bg-panel); border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 8px; padding: 2rem; backdrop-filter: blur(10px);
+        }
+        .content-section h3 { font-family: var(--font-heading); color: var(--accent-gold); font-size: 1.8rem; margin-bottom: 1.5rem; border-bottom: 1px solid rgba(212, 175, 55, 0.2); padding-bottom: 0.5rem; }
+
+        /* Listaelemek (Rendelések és Üzenetek) */
+        .list-item {
+            background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 8px; padding: 1.5rem; margin-bottom: 1rem;
+        }
+        .list-item-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+        .list-item-header .date { color: var(--text-muted); font-size: 0.9rem; }
+        .list-item-header .total { font-weight: bold; color: #fff; font-size: 1.2rem; }
+        
+        .order-status { font-size: 0.8rem; padding: 0.3rem 0.8rem; border-radius: 4px; font-weight: bold; text-transform: uppercase; }
+        .status-pending { background: rgba(241, 196, 15, 0.2); color: var(--warning); border: 1px solid var(--warning); }
+        .status-completed { background: rgba(46, 204, 113, 0.2); color: var(--success); border: 1px solid var(--success); }
+
+        .items-list { font-size: 0.9rem; color: var(--text-muted); }
+        .items-list li { margin-bottom: 0.3rem; list-style-position: inside; }
+
+        .empty-state { text-align: center; color: var(--text-muted); padding: 2rem; font-style: italic; }
+
+        @media (max-width: 900px) {
+            .profile-container { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="index.html" class="logo">LUMINA</a>
+        <div class="nav-links">
+            <a href="index.html">Főoldal</a>
+            <a href="shop.html">Étlap & Rendelés</a>
+            <a href="contact.html">Kapcsolat</a>
+            <a href="profile.html" class="active">Fiókom</a>
+        </div>
+    </nav>
+
+    <div class="profile-container">
+        
+        <aside class="profile-sidebar">
+            <div class="avatar-circle" id="userInitial">?</div>
+            <h2 id="userName">Betöltés...</h2>
+            <p id="userEmail">Kérlek várj...</p>
+            
+            <div id="roleBadge" class="badge badge-user">Vásárló</div>
+
+            <div class="loyalty-status">
+                <span>Hűségszint</span>
+                <strong id="loyaltyTier">Új Vendég</strong>
+            </div>
+
+            <button class="btn-logout" id="logoutBtn">Kijelentkezés</button>
+        </aside>
+
+        <main class="profile-content">
+            
+            <section class="content-section">
+                <h3>Korábbi Rendelések</h3>
+                <div id="ordersContainer">
+                    <div class="empty-state">Rendelések betöltése...</div>
+                </div>
+            </section>
+
+            <section class="content-section">
+                <h3>Elküldött Üzenetek</h3>
+                <div id="messagesContainer">
+                    <div class="empty-state">Üzenetek betöltése...</div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+        import { getFirestore, collection, query, where, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCytHaIELWaEZ-DwWuPDMdrTKj9Lwioay0",
+            authDomain: "balaton-tengeri-etterem.firebaseapp.com",
+            projectId: "balaton-tengeri-etterem",
+            storageBucket: "balaton-tengeri-etterem.firebasestorage.app",
+            messagingSenderId: "1070631358793",
+            appId: "1:1070631358793:web:1a6603f54b9f1948e5ca98",
+            measurementId: "G-F214XZK2QV"
+        };
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // UI Elemek
+        const userNameEl = document.getElementById('userName');
+        const userEmailEl = document.getElementById('userEmail');
+        const userInitialEl = document.getElementById('userInitial');
+        const roleBadgeEl = document.getElementById('roleBadge');
+        const loyaltyTierEl = document.getElementById('loyaltyTier');
+        const ordersContainer = document.getElementById('ordersContainer');
+        const messagesContainer = document.getElementById('messagesContainer');
+        const logoutBtn = document.getElementById('logoutBtn');
+
+        // Segédfüggvény Dátum formázásához
+        function formatDate(firebaseTimestamp) {
+            if (!firebaseTimestamp) return 'Ismeretlen időpont';
+            const date = firebaseTimestamp.toDate();
+            return date.toLocaleDateString('hu-HU', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+        }
+
+        // Hitelesítés figyelése
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                // Ha nincs bejelentkezve, kidobjuk a login oldalra
+                window.location.href = "login.html";
+                return;
+            }
+
+            // 1. Felhasználói alapadatok betöltése
+            userEmailEl.textContent = user.email;
+            
+            try {
+                const userDoc = await getDoc(doc(db, "users", user.uid));
+                if (userDoc.exists()) {
+                    const userData = userDoc.data();
+                    userNameEl.textContent = userData.fullName || "Kedves Vendég";
+                    userInitialEl.textContent = (userData.fullName ? userData.fullName.charAt(0).toUpperCase() : "V");
+                    
+                    if (userData.role === 'admin') {
+                        roleBadgeEl.textContent = "Adminisztrátor";
+                        roleBadgeEl.className = "badge badge-admin";
+                    }
+                }
+            } catch (error) {
+                console.error("Hiba a profil betöltésekor:", error);
+            }
+
+            // 2. Rendelések lekérdezése
+            try {
+                const qOrders = query(collection(db, "orders"), where("userId", "==", user.uid));
+                const ordersSnapshot = await getDocs(qOrders);
+                
+                // Firestore-ból visszakapott adatok rendezése időrendben csökkenőbe (legújabb legelöl)
+                const orders = [];
+                ordersSnapshot.forEach(doc => orders.push({ id: doc.id, ...doc.data() }));
+                orders.sort((a, b) => b.createdAt?.seconds - a.createdAt?.seconds);
+
+                // VIP státusz megállapítása rendelés szám alapján
+                if (orders.length === 0) loyaltyTierEl.textContent = "Új Vendég";
+                else if (orders.length < 3) loyaltyTierEl.textContent = "Törzsvendég";
+                else loyaltyTierEl.textContent = "Lumina Prémium Tag";
+
+                // UI Frissítése
+                ordersContainer.innerHTML = '';
+                if (orders.length === 0) {
+                    ordersContainer.innerHTML = '<div class="empty-state">Még nem adtál le rendelést éttermünkben.</div>';
+                } else {
+                    orders.forEach(order => {
+                        const statusClass = order.status === 'completed' ? 'status-completed' : 'status-pending';
+                        const statusText = order.status === 'completed' ? 'Teljesítve' : 'Feldolgozás alatt';
+                        
+                        let itemsHtml = '<ul class="items-list">';
+                        order.items.forEach(item => {
+                            itemsHtml += `<li>${item.quantity}x ${item.name}</li>`;
+                        });
+                        itemsHtml += '</ul>';
+
+                        ordersContainer.innerHTML += `
+                            <div class="list-item">
+                                <div class="list-item-header">
+                                    <div>
+                                        <span class="order-status ${statusClass}">${statusText}</span>
+                                        <div class="date" style="margin-top: 5px;">${formatDate(order.createdAt)}</div>
+                                    </div>
+                                    <div class="total">${order.totalAmount.toLocaleString('hu-HU')} Ft</div>
+                                </div>
+                                ${itemsHtml}
+                            </div>
+                        `;
+                    });
+                }
+            } catch (error) {
+                console.error("Hiba a rendelések lekérdezésekor:", error);
+                ordersContainer.innerHTML = '<div class="empty-state" style="color:red;">Hiba történt az adatok betöltésekor.</div>';
+            }
+
+            // 3. Üzenetek lekérdezése
+            try {
+                const qMsgs = query(collection(db, "contact_messages"), where("userId", "==", user.uid));
+                const msgsSnapshot = await getDocs(qMsgs);
+                
+                const messages = [];
+                msgsSnapshot.forEach(doc => messages.push(doc.data()));
+                messages.sort((a, b) => b.createdAt?.seconds - a.createdAt?.seconds);
+
+                messagesContainer.innerHTML = '';
+                if (messages.length === 0) {
+                    messagesContainer.innerHTML = '<div class="empty-state">Még nem küldtél nekünk üzenetet.</div>';
+                } else {
+                    messages.forEach(msg => {
+                        messagesContainer.innerHTML += `
+                            <div class="list-item">
+                                <div class="list-item-header" style="margin-bottom: 0.5rem;">
+                                    <div class="date">${formatDate(msg.createdAt)}</div>
+                                </div>
+                                <p style="color: var(--text-main); font-style: italic;">"${msg.message}"</p>
+                            </div>
+                        `;
+                    });
+                }
+            } catch (error) {
+                console.error("Hiba az üzenetek lekérdezésekor:", error);
+            }
+        });
+
+        // Kijelentkezés funkció
+        logoutBtn.addEventListener('click', async () => {
+            try {
+                await signOut(auth);
+                window.location.href = "index.html";
+            } catch (error) {
+                console.error("Hiba a kijelentkezéskor:", error);
+                alert("Hiba történt a kijelentkezés során.");
+            }
+        });
+    </script>
+</body>
+</html>
