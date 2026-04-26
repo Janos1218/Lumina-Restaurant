@@ -91,7 +91,33 @@
             background-color: #F1C40F;
             box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
         }
-
+        /* --- UNIVERZÁLIS MINIMALISTA NAVIGÁCIÓS GOMBOK --- */
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem; /* Távolság a Kosár és Bejelentkezés között */
+        }
+        
+        .nav-actions a, .nav-actions button {
+            background: transparent;
+            color: var(--accent-gold);
+            border: none;
+            font-family: var(--font-text);
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: color 0.3s ease, text-shadow 0.3s ease;
+        }
+        
+        .nav-actions a:hover, .nav-actions button:hover {
+            color: #fff;
+            text-shadow: 0 0 8px rgba(212, 175, 55, 0.6);
+            background: transparent; /* Eltünteti a régi sárga hátteret */
+            box-shadow: none;
+        }
         /* --- Autentikációs szekció (Űrlap középen) --- */
         .auth-section {
             flex: 1;
@@ -221,11 +247,12 @@
             <a href="index.html">Főoldal</a>
             <a href="about.html">Rólunk</a>
             <a href="shop.html">Étlap & Rendelés</a>
+            <a href="reservation.html">Asztalfoglalás</a>
             <a href="contact.html">Kapcsolat</a>
         </div>
         <div class="nav-actions">
-            <a href="checkout.html">Kosár (0)</a>
-            <a href="login.html">Bejelentkezés</a>
+            <a href="shop.html" id="navCartBtn">Kosár (0)</a>
+            <a href="login.html" id="navLoginBtn">Bejelentkezés</a>
         </div>
     </nav>
 
@@ -285,7 +312,13 @@
 
         // Initialize Firebase
         
-
+        const navCartBtn = document.getElementById('navCartBtn');
+        if (navCartBtn) {
+            const cart = JSON.parse(localStorage.getItem('lumina_cart')) || [];
+            // Összeszámoljuk a darabszámokat
+            const totalItems = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
+            navCartBtn.textContent = `Kosár (${totalItems})`;
+        }
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);

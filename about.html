@@ -87,6 +87,32 @@
             background-color: #F1C40F;
             box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
         }
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem; /* Távolság a Kosár és Bejelentkezés között */
+        }
+        
+        .nav-actions a, .nav-actions button {
+            background: transparent;
+            color: var(--accent-gold);
+            border: none;
+            font-family: var(--font-text);
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: color 0.3s ease, text-shadow 0.3s ease;
+        }
+        
+        .nav-actions a:hover, .nav-actions button:hover {
+            color: #fff;
+            text-shadow: 0 0 8px rgba(212, 175, 55, 0.6);
+            background: transparent; /* Eltünteti a régi sárga hátteret */
+            box-shadow: none;
+        }
 
         /* --- Oldal Fejléc --- */
         .page-header {
@@ -261,16 +287,17 @@
 </head>
 <body>
 
-    <nav>
+    <<nav>
         <a href="index.html" class="logo">LUMINA</a>
         <div class="nav-links">
             <a href="index.html">Főoldal</a>
-            <a href="about.html" class="active">Rólunk</a>
+            <a href="about.html">Rólunk</a>
             <a href="shop.html">Étlap & Rendelés</a>
+            <a href="reservation.html">Asztalfoglalás</a>
             <a href="contact.html">Kapcsolat</a>
         </div>
         <div class="nav-actions">
-            <a href="checkout.html">Kosár (0)</a>
+            <a href="shop.html" id="navCartBtn">Kosár (0)</a>
             <a href="login.html" id="navLoginBtn">Bejelentkezés</a>
         </div>
     </nav>
@@ -330,36 +357,44 @@
         <p>&copy; 2026 Lumina Tengeri Étterem. Minden jog fenntartva.</p>
     </footer>
     <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyCytHaIELWaEZ-DwWuPDMdrTKj9Lwioay0",
-        authDomain: "balaton-tengeri-etterem.firebaseapp.com",
-        projectId: "balaton-tengeri-etterem",
-        storageBucket: "balaton-tengeri-etterem.firebasestorage.app",
-        messagingSenderId: "1070631358793",
-        appId: "1:1070631358793:web:1a6603f54b9f1948e5ca98",
-        measurementId: "G-F214XZK2QV"
-    };
+        // Saját Firebase adatok
+        const firebaseConfig = {
+            apiKey: "AIzaSyCytHaIELWaEZ-DwWuPDMdrTKj9Lwioay0",
+            authDomain: "balaton-tengeri-etterem.firebaseapp.com",
+            projectId: "balaton-tengeri-etterem",
+            storageBucket: "balaton-tengeri-etterem.firebasestorage.app",
+            messagingSenderId: "1070631358793",
+            appId: "1:1070631358793:web:1a6603f54b9f1948e5ca98"
+        };
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
 
-    // Megkeressük a gombot (kezeljük, ha esetleg navLoginBtn vagy loginNavBtn az ID-ja)
-    const navLoginBtn = document.getElementById('navLoginBtn') || document.getElementById('loginNavBtn');
+        // 1. Gomb csere (Bejelentkezés -> Fiókom)
+        const navLoginBtn = document.getElementById('navLoginBtn');
+        if (navLoginBtn) {
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    navLoginBtn.textContent = "Fiókom";
+                    navLoginBtn.href = "profile.html";
+                } else {
+                    navLoginBtn.textContent = "Bejelentkezés";
+                    navLoginBtn.href = "login.html";
+                }
+            });
+        }
 
-    if (navLoginBtn) {
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                navLoginBtn.textContent = "Fiókom";
-                navLoginBtn.href = "profile.html";
-            } else {
-                navLoginBtn.textContent = "Bejelentkezés";
-                navLoginBtn.href = "login.html";
-            }
-        });
-    }
-</script>
+        // 2. Kosár számláló frissítése minden oldalon a LocalStorage-ből
+        const navCartBtn = document.getElementById('navCartBtn');
+        if (navCartBtn) {
+            const cart = JSON.parse(localStorage.getItem('lumina_cart')) || [];
+            // Összeszámoljuk a darabszámokat
+            const totalItems = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
+            navCartBtn.textContent = `Kosár (${totalItems})`;
+        }
+    </script>
 </body>
 </html>

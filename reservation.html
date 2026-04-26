@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asztalfoglalás | Lumina Luxus Étterem</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Playfair+Display:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌊</text></svg>">
+    
+    <style>
+        :root {
+            --bg-dark: #02050D;
+            --bg-panel: rgba(10, 20, 45, 0.5);
+            --accent-gold: #D4AF37;
+            --text-main: #E2E8F0;
+            --text-muted: #94A3B8;
+            --font-heading: 'Playfair Display', serif;
+            --font-text: 'Montserrat', sans-serif;
+            --danger: #e74c3c;
+            --success: #2ecc71;
+            --warning: #f1c40f;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--font-text);
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            background: radial-gradient(circle at top, #0A1931 0%, #02050D 100%);
+            min-height: 100vh;
+            padding-top: 100px;
+        }
+
+        /* Navigáció */
+        nav {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 1.5rem 5%; background: rgba(2, 5, 13, 0.85); backdrop-filter: blur(10px);
+            position: fixed; width: 100%; top: 0; z-index: 100;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+        }
+        .logo { font-family: var(--font-heading); font-size: 2rem; color: var(--accent-gold); text-decoration: none; letter-spacing: 2px; }
+        .nav-links a { color: var(--text-main); text-decoration: none; margin: 0 1.5rem; font-size: 0.9rem; text-transform: uppercase; }
+        .nav-links a:hover, .nav-links a.active { color: var(--accent-gold); }
+        /* --- UNIVERZÁLIS MINIMALISTA NAVIGÁCIÓS GOMBOK --- */
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem; /* Távolság a Kosár és Bejelentkezés között */
+        }
+        
+        .nav-actions a, .nav-actions button {
+            background: transparent;
+            color: var(--accent-gold);
+            border: none;
+            font-family: var(--font-text);
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: color 0.3s ease, text-shadow 0.3s ease;
+        }
+        
+        .nav-actions a:hover, .nav-actions button:hover {
+            color: #fff;
+            text-shadow: 0 0 8px rgba(212, 175, 55, 0.6);
+            background: transparent; /* Eltünteti a régi sárga hátteret */
+            box-shadow: none;
+        }
+        /* Fejléc Szekció */
+        .res-header {
+            text-align: center;
+            padding: 80px 20px 60px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .res-header h1 {
+            font-family: var(--font-heading);
+            font-size: 3.5rem;
+            color: var(--accent-gold);
+            margin-bottom: 1.5rem;
+            font-weight: 400;
+        }
+        .res-header p { color: var(--text-muted); font-size: 1.1rem; line-height: 1.8; }
+
+        /* Elrendezés */
+        .container {
+            max-width: 1200px; margin: 0 auto 100px; padding: 0 40px;
+            display: grid; grid-template-columns: 1fr 1.5fr; gap: 5rem; align-items: start;
+        }
+
+        /* Bal oldal: Infók */
+        .info-section { display: flex; flex-direction: column; gap: 3rem; }
+        .info-group h3 { font-family: var(--font-heading); color: var(--accent-gold); font-size: 1.5rem; margin-bottom: 1rem; display: flex; align-items: center; }
+        .info-group h3::after { content: ""; flex: 1; height: 1px; background: rgba(212, 175, 55, 0.2); margin-left: 15px; }
+        .info-group p { color: var(--text-muted); line-height: 1.8; }
+
+        /* Jobb oldal: Űrlap */
+        .form-card {
+            background: var(--bg-panel); border: 1px solid rgba(212, 175, 55, 0.15);
+            padding: 4rem; border-radius: 4px; backdrop-filter: blur(10px); box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+        .form-card h2 { font-family: var(--font-heading); font-size: 2rem; margin-bottom: 2.5rem; color: #fff; text-align: center; }
+
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+        .form-group { margin-bottom: 2rem; }
+        .form-group label { display: block; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 0.8rem; color: var(--accent-gold); }
+        
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%; padding: 1rem 0; background: transparent; border: none;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2); color: #fff;
+            font-family: var(--font-text); font-size: 1rem; transition: border-color 0.3s;
+        }
+        /* Dátum/Idő picker sötét téma hack */
+        .form-group input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); cursor: pointer; }
+        
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-bottom-color: var(--accent-gold); }
+        .form-group select option { background: var(--bg-dark); color: #fff; }
+        .form-group textarea { height: 80px; resize: none; }
+
+        .btn-submit {
+            width: 100%; padding: 1.2rem; background: var(--accent-gold); color: var(--bg-dark); border: none;
+            font-weight: 600; text-transform: uppercase; letter-spacing: 2px; cursor: pointer; transition: all 0.3s; margin-top: 1rem;
+        }
+        .btn-submit:hover:not(:disabled) { background: #F1C40F; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3); }
+
+        /* Admin Panel */
+        #adminPanel { max-width: 1200px; margin: 50px auto 100px; padding: 0 40px; display: none; }
+        .admin-card { background: rgba(212, 175, 55, 0.03); border: 1px solid var(--accent-gold); padding: 3rem; border-radius: 4px; }
+        .admin-card h2 { font-family: var(--font-heading); color: var(--accent-gold); margin-bottom: 2rem; text-align: center; }
+        
+        .res-item {
+            background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 4px; margin-bottom: 1rem;
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;
+        }
+        .res-details p { margin-bottom: 0.3rem; }
+        .res-details strong { color: #fff; }
+        .res-actions { display: flex; gap: 10px; }
+        
+        .badge { padding: 5px 10px; border-radius: 4px; font-weight: bold; font-size: 0.8rem; text-transform: uppercase; }
+        .badge.pending { color: var(--warning); border: 1px solid var(--warning); background: rgba(241, 196, 15, 0.1); }
+        .badge.approved { color: var(--success); border: 1px solid var(--success); background: rgba(46, 204, 113, 0.1); }
+        .badge.rejected { color: var(--danger); border: 1px solid var(--danger); background: rgba(231, 76, 60, 0.1); }
+        
+        .btn-action { padding: 8px 15px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; color: #fff; }
+        .btn-approve { background: var(--success); }
+        .btn-reject { background: var(--danger); }
+
+        @media (max-width: 900px) { .container { grid-template-columns: 1fr; gap: 4rem; } .form-row { grid-template-columns: 1fr; gap: 0; } }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="index.html" class="logo">LUMINA</a>
+        <div class="nav-links">
+            <a href="index.html">Főoldal</a>
+            <a href="about.html">Rólunk</a>
+            <a href="shop.html">Étlap & Rendelés</a>
+            <a href="reservation.html">Asztalfoglalás</a>
+            <a href="contact.html">Kapcsolat</a>
+        </div>
+        <div class="nav-actions">
+            <a href="shop.html" id="navCartBtn">Kosár (0)</a>
+            <a href="login.html" id="navLoginBtn">Bejelentkezés</a>
+        </div>
+    </nav>
+
+    <div class="res-header">
+        <h1>Asztalfoglalás</h1>
+        <p>Biztosítsa be helyét a Lumina Étteremben. Kérjük, válassza ki a kívánt időpontot, és adja hozzá foglalását a kosarához.</p>
+    </div>
+
+    <main class="container">
+        <section class="info-section">
+            <div class="info-group">
+                <h3>Dress Code</h3>
+                <p>Kérjük vendégeinket az elegáns, "Smart Casual" öltözék betartására. Sportruházat viselése nem megengedett.</p>
+            </div>
+            <div class="info-group">
+                <h3>Késési Szabályzat</h3>
+                <p>Az asztalokat a lefoglalt időponttól számítva 20 percig tudjuk fenntartani. Késés esetén kérjük, értesítsen minket telefonon.</p>
+            </div>
+            <div class="info-group">
+                <h3>Különleges Kérések</h3>
+                <p>Ételallergiáját vagy különleges alkalomra (pl. születésnap, évforduló) vonatkozó kéréseit kérjük, jelezze az űrlapon.</p>
+            </div>
+        </section>
+
+        <section class="form-card">
+            <h2>Foglalás Részletei</h2>
+            <form id="reservationForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Dátum</label>
+                        <input type="date" id="resDate" required min="">
+                    </div>
+                    <div class="form-group">
+                        <label>Időpont</label>
+                        <select id="resTime" required>
+                            <option value="">Válasszon...</option>
+                            <option value="18:00">18:00</option>
+                            <option value="18:30">18:30</option>
+                            <option value="19:00">19:00</option>
+                            <option value="19:30">19:30</option>
+                            <option value="20:00">20:00</option>
+                            <option value="20:30">20:30</option>
+                            <option value="21:00">21:00</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Személyek száma</label>
+                    <input type="number" id="resGuests" min="1" max="12" required placeholder="Hány főre?">
+                </div>
+                <div class="form-group">
+                    <label>Különleges kérések (Opcionális)</label>
+                    <textarea id="resRequests" placeholder="Allergia, ablak melletti asztal, stb..."></textarea>
+                </div>
+                <button type="submit" class="btn-submit" id="submitResBtn">Hozzáadás a kosárhoz</button>
+            </form>
+        </section>
+    </main>
+
+    <section id="adminPanel">
+        <div class="admin-card">
+            <h2>Beérkezett Foglalások (Admin)</h2>
+            <div id="adminResList">
+                <p style="text-align: center; color: var(--text-muted);">Betöltés...</p>
+            </div>
+        </div>
+    </section>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+        import { getFirestore, collection, getDocs, doc, getDoc, updateDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCytHaIELWaEZ-DwWuPDMdrTKj9Lwioay0",
+            authDomain: "balaton-tengeri-etterem.firebaseapp.com",
+            projectId: "balaton-tengeri-etterem",
+            storageBucket: "balaton-tengeri-etterem.firebasestorage.app",
+            messagingSenderId: "1070631358793",
+            appId: "1:1070631358793:web:1a6603f54b9f1948e5ca98",
+            measurementId: "G-F214XZK2QV"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let currentUser = null;
+        const navLoginBtn = document.getElementById('navLoginBtn');
+        const adminPanel = document.getElementById('adminPanel');
+
+        // Mai nap beállítása a dátumválasztó minimumnak
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('resDate').setAttribute('min', today);
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUser = user;
+                navLoginBtn.textContent = "Fiókom";
+                navLoginBtn.href = "profile.html";
+
+                const userDoc = await getDoc(doc(db, "users", user.uid));
+                if (userDoc.exists() && userDoc.data().role === 'admin') {
+                    adminPanel.style.display = 'block';
+                    loadAdminReservations();
+                }
+            } else {
+                currentUser = null;
+            }
+        });
+
+        const navCartBtn = document.getElementById('navCartBtn');
+        if (navCartBtn) {
+            const cart = JSON.parse(localStorage.getItem('lumina_cart')) || [];
+            // Összeszámoljuk a darabszámokat
+            const totalItems = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
+            navCartBtn.textContent = `Kosár (${totalItems})`;
+        }
+        
+        // 1. FOGLALÁS HOZZÁADÁSA A KOSÁRHOZ (Helyi memóriába)
+        document.getElementById('reservationForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            if (!currentUser) {
+                alert("Az asztalfoglaláshoz kérjük, jelentkezzen be!");
+                window.location.href = "login.html";
+                return;
+            }
+
+            const date = document.getElementById('resDate').value;
+            const time = document.getElementById('resTime').value;
+            const guests = document.getElementById('resGuests').value;
+            const requests = document.getElementById('resRequests').value;
+
+            // Kosár betöltése
+            let cart = JSON.parse(localStorage.getItem('lumina_cart')) || [];
+            
+            // Ellenőrizzük, hogy van-e már foglalás a kosárban
+            const hasReservation = cart.some(item => item.isReservation);
+            if (hasReservation) {
+                alert("Már van egy asztalfoglalás a kosarában! Kérjük, előbb fejezze be a megkezdett rendelést.");
+                return;
+            }
+
+            // Foglalás objektum létrehozása (Termékként)
+            const reservationItem = {
+                id: 'res_' + Date.now(),
+                name: `Asztalfoglalás: ${date} ${time} (${guests} fő)`,
+                price: 0, // Ingyenes a foglalás maga
+                quantity: 1,
+                isReservation: true, // Speciális jelölő a checkoutnak
+                resDate: date,
+                resTime: time,
+                resGuests: guests,
+                resRequests: requests
+            };
+
+            // Hozzáadás a kosárhoz
+            cart.push(reservationItem);
+            localStorage.setItem('lumina_cart', JSON.stringify(cart));
+
+            alert("Asztalfoglalás sikeresen hozzáadva a kosárhoz!\nKérjük, lépjen a 'Pénztár' oldalra a véglegesítéshez.");
+            window.location.href = "shop.html"; // Átirányítás a shopra, hogy lássa a kosarát (vagy egyből checkout.html-re is lehetne)
+        });
+
+
+        // 2. ADMIN PANEL LOGIKA (Kiolvasás a 'reservations' adatbázisból)
+        async function loadAdminReservations() {
+            const adminResList = document.getElementById('adminResList');
+            try {
+                const q = query(collection(db, "reservations"), orderBy("createdAt", "desc"));
+                const snap = await getDocs(q);
+                adminResList.innerHTML = "";
+
+                if (snap.empty) {
+                    adminResList.innerHTML = "<p style='text-align:center;'>Nincsenek beérkezett foglalások.</p>";
+                    return;
+                }
+
+                snap.forEach(d => {
+                    const data = d.data();
+                    let badgeClass = "pending";
+                    let badgeText = "Függőben";
+                    
+                    if (data.status === "approved") { badgeClass = "approved"; badgeText = "Jóváhagyva"; }
+                    if (data.status === "rejected") { badgeClass = "rejected"; badgeText = "Elutasítva"; }
+
+                    adminResList.innerHTML += `
+                        <div class="res-item">
+                            <div class="res-details">
+                                <p><strong>Név:</strong> ${data.customerName}</p>
+                                <p style="color: var(--accent-gold);"><strong>Időpont:</strong> ${data.resDate} - ${data.resTime} (${data.resGuests} fő)</p>
+                                <p><small>Kérések: ${data.resRequests || '-'}</small></p>
+                            </div>
+                            <div class="res-actions">
+                                <div class="badge ${badgeClass}">${badgeText}</div>
+                                ${data.status === 'pending' ? `
+                                    <button class="btn-action btn-approve" onclick="updateResStatus('${d.id}', 'approved')">✓</button>
+                                    <button class="btn-action btn-reject" onclick="updateResStatus('${d.id}', 'rejected')">✕</button>
+                                ` : ''}
+                            </div>
+                        </div>
+                    `;
+                });
+            } catch (err) {
+                console.error("Admin hiba:", err);
+                adminResList.innerHTML = "<p style='color:red; text-align:center;'>Hiba az adatok lekérésekor.</p>";
+            }
+        }
+
+        // Foglalás státusz frissítése (Globális függvény)
+        window.updateResStatus = async (docId, newStatus) => {
+            if (!confirm(`Biztosan ${newStatus === 'approved' ? 'jóváhagyod' : 'elutasítod'} ezt a foglalást?`)) return;
+            try {
+                await updateDoc(doc(db, "reservations", docId), { status: newStatus });
+                loadAdminReservations(); // Újratöltjük a listát
+            } catch (error) {
+                console.error(error);
+                alert("Hiba a státusz frissítésekor.");
+            }
+        };
+    </script>
+</body>
+</html>
