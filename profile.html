@@ -113,22 +113,134 @@
         @media (max-width: 900px) {
             .profile-container { grid-template-columns: 1fr; }
         }
+        /* --- MOBIL RESZPONSZÍV MENÜ (Hamburger) --- */
+        .hamburger {
+            display: none; /* Mobilon kívül rejtve van */
+            flex-direction: column;
+            cursor: pointer;
+            gap: 5px;
+        }
+
+        .hamburger span {
+            width: 25px;
+            height: 3px;
+            background-color: var(--accent-gold);
+            border-radius: 2px;
+            transition: 0.3s;
+        }
+
+        @media (max-width: 850px) {
+            .hamburger {
+                display: flex;
+                order: 3; /* A legszélére tolja a gombot */
+            }
+
+            .nav-actions {
+                order: 2; /* A logó és a hamburger közé kerül */
+                margin-left: auto;
+                margin-right: 20px;
+            }
+
+            /* A linkek összecsukása egy lenyíló menübe */
+            .nav-links {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: rgba(2, 5, 13, 0.95);
+                backdrop-filter: blur(10px);
+                flex-direction: column;
+                text-align: center;
+                max-height: 0; /* Alapból zárva */
+                overflow: hidden;
+                transition: max-height 0.4s ease, padding 0.4s ease;
+                margin: 0;
+                gap: 0;
+                border-bottom: 1px solid transparent;
+            }
+
+            /* Ez az osztály nyitja ki a menüt */
+            .nav-links.active {
+                max-height: 350px;
+                padding: 1.5rem 0;
+                border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+            }
+
+            .nav-links a {
+                padding: 15px 0;
+                display: block;
+                width: 100%;
+            }
+        }
+
+        /* Extra kis telefonokra optimalizálás */
+        @media (max-width: 480px) {
+            .logo { font-size: 1.5rem; }
+            .nav-actions { gap: 1rem; margin-right: 15px; }
+            .nav-actions a, .nav-actions button { font-size: 0.75rem; }
+            nav { padding: 1rem 5%; }
+        }
+        /* Navigáció */
+        nav {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 1.5rem 5%; background: rgba(2, 5, 13, 0.85); backdrop-filter: blur(10px);
+            position: fixed; width: 100%; top: 0; z-index: 100;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+            box-sizing: border-box; /* A kilógás megakadályozása */
+        }
+        .logo { font-family: var(--font-heading); font-size: 2rem; color: var(--accent-gold); text-decoration: none; letter-spacing: 2px; }
+        .nav-links a { color: var(--text-main); text-decoration: none; margin: 0 1.5rem; font-size: 0.9rem; text-transform: uppercase; transition: color 0.3s ease; }
+        .nav-links a:hover, .nav-links a.active { color: var(--accent-gold); }
+
+        /* Asztali gombok stílusa (Kosár és Fiókom) */
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        .nav-actions a {
+            background: transparent;
+            color: var(--accent-gold);
+            border: none;
+            font-family: var(--font-text);
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: color 0.3s ease, text-shadow 0.3s ease;
+        }
+        .nav-actions a:hover {
+            color: #fff;
+            text-shadow: 0 0 8px rgba(212, 175, 55, 0.6);
+        }
     </style>
 </head>
 <body>
 
     <nav>
         <a href="index.html" class="logo">LUMINA</a>
-        <div class="nav-links">
+        
+        <!-- Fontos: megkapta az id="navLinks" azonosítót -->
+        <div class="nav-links" id="navLinks">
             <a href="index.html">Főoldal</a>
             <a href="about.html">Rólunk</a>
-            <a href="shop.html">Étlap & Rendelés</a>
-            <a href="reservation.html">Asztalfoglalás</a>
+            <a href="shop.html">Étlap</a>
+            <a href="reservation.html">Foglalás</a>
             <a href="contact.html">Kapcsolat</a>
         </div>
+
         <div class="nav-actions">
             <a href="shop.html" id="navCartBtn">Kosár (0)</a>
             <a href="login.html" id="navLoginBtn">Bejelentkezés</a>
+        </div>
+
+        <!-- Új hamburger gomb -->
+        <div class="hamburger" onclick="toggleMobileMenu()">
+            <span></span>
+            <span></span>
+            <span></span>
         </div>
     </nav>
 
@@ -210,6 +322,13 @@
                 window.location.href = "login.html";
                 return;
             }
+            document.getElementById('navLoginBtn').textContent = "Fiókom";
+            document.getElementById('navLoginBtn').href = "profile.html";
+            
+            const cart = JSON.parse(localStorage.getItem('lumina_cart')) || [];
+            const totalItems = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
+            document.getElementById('navCartBtn').textContent = `Kosár (${totalItems})`;
+            // -----------------------------
 
             // 1. Felhasználói alapadatok betöltése
             userEmailEl.textContent = user.email;
@@ -318,6 +437,12 @@
                 alert("Hiba történt a kijelentkezés során.");
             }
         });
+    </script>
+    <script>
+        // Mobil menü nyitása / csukása
+        function toggleMobileMenu() {
+            document.getElementById('navLinks').classList.toggle('active');
+        }
     </script>
 </body>
 </html>

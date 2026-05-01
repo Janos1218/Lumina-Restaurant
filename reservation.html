@@ -151,22 +151,99 @@
         .btn-reject { background: var(--danger); }
 
         @media (max-width: 900px) { .container { grid-template-columns: 1fr; gap: 4rem; } .form-row { grid-template-columns: 1fr; gap: 0; } }
+        /* --- MOBIL RESZPONSZÍV MENÜ (Hamburger) --- */
+        .hamburger {
+            display: none; /* Mobilon kívül rejtve van */
+            flex-direction: column;
+            cursor: pointer;
+            gap: 5px;
+        }
+
+        .hamburger span {
+            width: 25px;
+            height: 3px;
+            background-color: var(--accent-gold);
+            border-radius: 2px;
+            transition: 0.3s;
+        }
+
+        @media (max-width: 850px) {
+            .hamburger {
+                display: flex;
+                order: 3; /* A legszélére tolja a gombot */
+            }
+
+            .nav-actions {
+                order: 2; /* A logó és a hamburger közé kerül */
+                margin-left: auto;
+                margin-right: 20px;
+            }
+
+            /* A linkek összecsukása egy lenyíló menübe */
+            .nav-links {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: rgba(2, 5, 13, 0.95);
+                backdrop-filter: blur(10px);
+                flex-direction: column;
+                text-align: center;
+                max-height: 0; /* Alapból zárva */
+                overflow: hidden;
+                transition: max-height 0.4s ease, padding 0.4s ease;
+                margin: 0;
+                gap: 0;
+                border-bottom: 1px solid transparent;
+            }
+
+            /* Ez az osztály nyitja ki a menüt */
+            .nav-links.active {
+                max-height: 350px;
+                padding: 1.5rem 0;
+                border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+            }
+
+            .nav-links a {
+                padding: 15px 0;
+                display: block;
+                width: 100%;
+            }
+        }
+
+        /* Extra kis telefonokra optimalizálás */
+        @media (max-width: 480px) {
+            .logo { font-size: 1.5rem; }
+            .nav-actions { gap: 1rem; margin-right: 15px; }
+            .nav-actions a, .nav-actions button { font-size: 0.75rem; }
+            nav { padding: 1rem 5%; }
+        }
     </style>
 </head>
 <body>
 
     <nav>
         <a href="index.html" class="logo">LUMINA</a>
-        <div class="nav-links">
+        
+        <!-- Fontos: megkapta az id="navLinks" azonosítót -->
+        <div class="nav-links" id="navLinks">
             <a href="index.html">Főoldal</a>
             <a href="about.html">Rólunk</a>
-            <a href="shop.html">Étlap & Rendelés</a>
-            <a href="reservation.html">Asztalfoglalás</a>
+            <a href="shop.html">Étlap</a>
+            <a href="reservation.html">Foglalás</a>
             <a href="contact.html">Kapcsolat</a>
         </div>
+
         <div class="nav-actions">
             <a href="shop.html" id="navCartBtn">Kosár (0)</a>
             <a href="login.html" id="navLoginBtn">Bejelentkezés</a>
+        </div>
+
+        <!-- Új hamburger gomb -->
+        <div class="hamburger" onclick="toggleMobileMenu()">
+            <span></span>
+            <span></span>
+            <span></span>
         </div>
     </nav>
 
@@ -388,6 +465,12 @@
                 alert("Hiba a státusz frissítésekor.");
             }
         };
+    </script>
+    <script>
+        // Mobil menü nyitása / csukása
+        function toggleMobileMenu() {
+            document.getElementById('navLinks').classList.toggle('active');
+        }
     </script>
 </body>
 </html>
